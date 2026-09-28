@@ -26,4 +26,4 @@ Ouvre http://localhost:3000
 - `/tableau-de-bord` (résumé du jour, alertes de stock)
 
 ## Important
-Ce code n'a pas pu être testé dans cet environnement (pas d'accès réseau pour installer les paquets). Teste-le d'abord en local ou sur Vercel, et signale-moi toute erreur — je la corrige avec toi.
+Ce code n'a pas pu être testé dans cet environnement (pas d'accès réseau pour installer les paquets). Teste-le d'abord en local ou sur Vercel, et signale-moi toute erreur — je la corrige avec toi. 
