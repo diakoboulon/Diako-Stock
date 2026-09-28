@@ -1,0 +1,27 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --font-display: 'Space Grotesk', system-ui, sans-serif;
+  --font-body: 'Inter', system-ui, sans-serif;
+}
+
+body {
+  background-color: #F5F1E8;
+  color: #161A22;
+}
+
+.btn-primary {
+  @apply bg-indigo-deep text-bone font-display font-semibold rounded-xl px-5 py-3
+         active:scale-[0.98] transition-transform disabled:opacity-50;
+}
+
+.input-field {
+  @apply w-full rounded-xl border border-ink/15 bg-white px-4 py-3 text-ink
+         placeholder:text-ink/40 focus:outline-none focus:ring-2 focus:ring-bronze;
+}
+
+.card {
+  @apply bg-white rounded-2xl border border-ink/10 p-5;
+}
