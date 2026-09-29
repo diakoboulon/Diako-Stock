@@ -1,4 +1,4 @@
-[02:25, 29/09/2026] DIALLO: "use client";
+ "use client";
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
