@@ -4,6 +4,32 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabase";
 
+function BottomNav() {
+  const items = [
+    { href: "/tableau-de-bord", label: "Accueil", icone: "🏠" },
+    { href: "/produits", label: "Produits", icone: "📦" },
+    { href: "/ventes/nouvelle", label: "Vente", icone: "🛒" },
+    { href: "/rapports", label: "Rapports", icone: "📊" },
+    { href: "/clients", label: "Clients", icone: "👥" },
+  ];
+  return (
+    <nav className="fixed bottom-0 left-0 right-0 bg-white border-t border-ink/10">
+      <div className="max-w-md mx-auto grid grid-cols-5">
+        {items.map((item) => (
+          <a
+            key={item.href}
+            href={item.href}
+            className="flex flex-col items-center gap-0.5 py-2.5 text-[11px] font-medium text-ink/40"
+          >
+            <span className="text-lg leading-none">{item.icone}</span>
+            {item.label}
+          </a>
+        ))}
+      </div>
+    </nav>
+  );
+}
+
 type Resume = {
   prenom: string;
   commerce: string;
@@ -136,9 +162,14 @@ export default function TableauDeBordPage() {
         </div>
       </section>
 
-      <button className="btn-primary w-full fixed bottom-6 left-1/2 -translate-x-1/2 max-w-md w-[calc(100%-2.5rem)] shadow-lg">
+      <a
+        href="/ventes/nouvelle"
+        className="btn-primary w-full fixed bottom-20 left-1/2 -translate-x-1/2 max-w-md w-[calc(100%-2.5rem)] shadow-lg text-center block"
+      >
         + Nouvelle vente
-      </button>
+      </a>
+
+      <BottomNav />
     </main>
   );
 }
