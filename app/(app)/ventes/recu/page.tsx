@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabase";
 
@@ -18,6 +18,20 @@ type Recu = {
 };
 
 export default function RecuPage() {
+  return (
+    <Suspense
+      fallback={
+        <main className="min-h-screen flex items-center justify-center text-ink/50">
+          Chargement...
+        </main>
+      }
+    >
+      <RecuContenu />
+    </Suspense>
+  );
+}
+
+function RecuContenu() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const saleId = searchParams.get("id") ?? "";
