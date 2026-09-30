@@ -4,7 +4,32 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabase";
 import { commerceActuel } from "@/lib/business";
-import BottomNav from "@/components/BottomNav";
+
+function BottomNav() {
+  const items = [
+    { href: "/tableau-de-bord", label: "Accueil", icone: "🏠" },
+    { href: "/produits", label: "Produits", icone: "📦" },
+    { href: "/ventes/nouvelle", label: "Vente", icone: "🛒" },
+    { href: "/rapports", label: "Rapports", icone: "📊" },
+    { href: "/clients", label: "Clients", icone: "👥" },
+  ];
+  return (
+    <nav className="fixed bottom-0 left-0 right-0 bg-white border-t border-ink/10">
+      <div className="max-w-md mx-auto grid grid-cols-5">
+        {items.map((item) => (
+          <a
+            key={item.href}
+            href={item.href}
+            className="flex flex-col items-center gap-0.5 py-2.5 text-[11px] font-medium text-ink/40"
+          >
+            <span className="text-lg leading-none">{item.icone}</span>
+            {item.label}
+          </a>
+        ))}
+      </div>
+    </nav>
+  );
+}
 
 type Produit = {
   id: string;
