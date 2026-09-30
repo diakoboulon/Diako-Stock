@@ -27,7 +27,7 @@ export default function NouvelleVentePage() {
   const [montantPaye, setMontantPaye] = useState("");
   const [envoi, setEnvoi] = useState(false);
   const [erreur, setErreur] = useState<string | null>(null);
-  const [venteReussie, setVenteReussie] = useState<number | null>(null);
+  const [venteReussie, setVenteReussie] = useState<{ total: number; id: string } | null>(null);
   const [chargement, setChargement] = useState(true);
 
   useEffect(() => {
@@ -114,7 +114,7 @@ export default function NouvelleVentePage() {
     }
 
     const clientUuid = crypto.randomUUID();
-    const { error } = await supabase.rpc("creer_vente", {
+    const { data: idVente, error } = await supabase.rpc("creer_vente", {
       p_business: businessId,
       p_customer: clientId || null,
       p_items: items,
@@ -127,7 +127,7 @@ export default function NouvelleVentePage() {
       setErreur(error.message);
       return;
     }
-    setVenteReussie(total);
+    setVenteReussie({ total, id: idVente as string });
   }
 
   if (chargement) {
@@ -146,9 +146,12 @@ export default function NouvelleVentePage() {
           Vente enregistrée
         </h1>
         <p className="text-ink/60 mb-8">
-          Total : {venteReussie.toLocaleString("fr-FR")} FCFA
+          Total : {venteReussie.total.toLocaleString("fr-FR")} FCFA
         </p>
         <div className="space-y-3 w-full max-w-xs">
+          <a href={/ventes/${venteReussie.id}/recu} className="btn-primary w-full block">
+            Voir le reçu
+          </a>
           <button
             onClick={() => {
               setPanier([]);
@@ -158,13 +161,13 @@ export default function NouvelleVentePage() {
               setVenteReussie(null);
               router.refresh();
             }}
-            className="btn-primary w-full"
+            className="block w-full text-center py-3 text-ink/60 font-medium"
           >
             Nouvelle vente
           </button>
           <a
             href="/tableau-de-bord"
-            className="block w-full text-center py-3 text-ink/60 font-medium"
+            className="block w-full text-center py-3 text-ink/40 text-sm"
           >
             Retour au tableau de bord
           </a>
