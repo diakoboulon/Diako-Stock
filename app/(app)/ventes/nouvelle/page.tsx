@@ -149,7 +149,7 @@ export default function NouvelleVentePage() {
           Total : {venteReussie.total.toLocaleString("fr-FR")} FCFA
         </p>
         <div className="space-y-3 w-full max-w-xs">
-                    <a href={`/ventes/${venteReussie.id}/recu`} className="btn-primary w-full block">
+          <a href={`/ventes/recu?id=${venteReussie.id}`} className="btn-primary w-full block">
             Voir reçu
           </a>
           <button
