@@ -125,12 +125,23 @@ export default function TableauDeBordPage() {
 
   return (
     <main className="min-h-screen bg-bone px-5 py-8 max-w-md mx-auto pb-28">
-      <header className="mb-6">
-        <p className="text-ink/50 text-sm">{resume.commerce}</p>
-        <h1 className="font-display text-2xl font-bold text-indigo-deep">
-          Bonjour {resume.prenom} 👋
-        </h1>
-      </header>
+           <header className="mb-6 flex items-start justify-between">
+        <div>
+          <p className="text-ink/50 text-sm">{resume.commerce}</p>
+          <h1 className="font-display text-2xl font-bold text-indigo-deep">
+            Bonjour {resume.prenom} 👋
+          </h1>
+        </div>
+        <button
+          onClick={async () => {
+            await supabase.auth.signOut();
+            router.push("/connexion");
+          }}
+          className="text-xs text-ink/40 border border-ink/15 rounded-full px-3 py-1.5 mt-1"
+        >
+          Déconnexion
+        </button>
+      </header> 
 
       <section className="grid grid-cols-2 gap-3 mb-4">
         <div className="card col-span-2 bg-indigo-deep text-bone">
