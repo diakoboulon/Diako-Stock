@@ -18,16 +18,16 @@ export const PLANS: Plan[] = [
   {
     id: "gratuit",
     nom: "Gratuit",
-    limite: 20,
+    limite: 10,
     prixMois: 0,
-    inclus: ["Jusqu'à 20 produits", "Ventes et stock automatique", "Reçus partagés sur WhatsApp"],
+    inclus: ["Jusqu'à 10 produits", "Ventes et stock automatique", "Reçus partagés sur WhatsApp"],
   },
   {
     id: "standard",
     nom: "Standard",
-    limite: 150,
-    prixMois: 3000,
-    inclus: ["Jusqu'à 150 produits", "Tout le plan Gratuit", "Fichier clients", "Rapports et bénéfices"],
+    limite: 100,
+    prixMois: 5000,
+    inclus: ["Jusqu'à 100 produits", "Tout le plan Gratuit", "Fichier clients", "Rapports et bénéfices"],
   },
   {
     id: "pro",
