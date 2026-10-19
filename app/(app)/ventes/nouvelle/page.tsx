@@ -141,15 +141,15 @@ export default function NouvelleVentePage() {
   if (venteReussie !== null) {
     return (
       <main className="min-h-screen bg-bone flex flex-col items-center justify-center px-6 text-center">
-        <p className="text-5xl mb-4">✅</p>
+        <p className="text-6xl mb-4 w-24 h-24 rounded-full bg-green-600/10 flex items-center justify-center">✅</p>
         <h1 className="font-display text-2xl font-bold text-indigo-deep mb-2">
           Vente enregistrée
         </h1>
-        <p className="text-ink/60 mb-8">
-          Total : {venteReussie.total.toLocaleString("fr-FR")} FCFA
+        <p className="font-display text-3xl font-bold text-bronze mb-8">
+          {venteReussie.total.toLocaleString("fr-FR")} FCFA
         </p>
         <div className="space-y-3 w-full max-w-xs">
-          <a href={`/ventes/recu?id=${venteReussie.id}`} className="btn-primary w-full block">
+          <a href={`/ventes/recu?id=${venteReussie.id}`} className="bg-bronze text-white font-display font-semibold text-[17px] rounded-2xl py-4 shadow-lg w-full block">
             Voir reçu
           </a>
           <button
@@ -178,16 +178,18 @@ export default function NouvelleVentePage() {
 
   return (
     <main className="min-h-screen bg-bone px-5 py-6 max-w-md mx-auto pb-40">
-      <h1 className="font-display text-2xl font-bold text-indigo-deep mb-4">
-        Nouvelle vente
-      </h1>
+      <h1 className="font-display text-2xl font-bold text-indigo-deep">Nouvelle vente</h1>
+      <p className="text-sm text-ink/50 mb-4">Touchez un produit pour l&apos;ajouter au panier.</p>
 
-      <input
-        className="input-field mb-3"
-        placeholder="Rechercher un produit..."
-        value={recherche}
-        onChange={(e) => setRecherche(e.target.value)}
-      />
+      <div className="relative mb-3">
+        <span className="absolute left-4 top-1/2 -translate-y-1/2 text-ink/40">🔍</span>
+        <input
+          className="input-field pl-11"
+          placeholder="Rechercher un produit..."
+          value={recherche}
+          onChange={(e) => setRecherche(e.target.value)}
+        />
+      </div>
 
       <div className="space-y-2 mb-6 max-h-60 overflow-y-auto">
         {produitsFiltres.length === 0 ? (
@@ -199,23 +201,24 @@ export default function NouvelleVentePage() {
             <button
               key={p.id}
               onClick={() => ajouterAuPanier(p)}
-              className="card w-full flex items-center justify-between text-left"
+              className="bg-white border border-ink/10 rounded-2xl p-3.5 w-full flex items-center gap-3 text-left active:scale-[0.99] transition-transform"
             >
-              <div>
+              <span className="flex-none w-10 h-10 rounded-xl bg-indigo-deep/10 flex items-center justify-center text-lg">📦</span>
+              <div className="flex-1">
                 <p className="font-medium text-ink">{p.nom}</p>
                 <p className="text-xs text-ink/50">
                   {p.prix_vente.toLocaleString("fr-FR")} FCFA · {p.quantite} {p.unite} dispo
                 </p>
               </div>
-              <span className="text-indigo-deep font-bold text-xl">+</span>
+              <span className="flex-none w-8 h-8 rounded-full bg-bronze text-white font-bold text-lg flex items-center justify-center">+</span>
             </button>
           ))
         )}
       </div>
 
       {panier.length > 0 && (
-        <div className="card mb-4">
-          <p className="font-display font-semibold text-indigo-deep mb-3">Panier</p>
+        <div className="bg-white border-2 border-indigo-deep/20 rounded-3xl p-4 mb-4">
+          <p className="font-display font-semibold text-indigo-deep mb-3">🛒 Panier</p>
           <div className="space-y-3">
             {panier.map((l) => (
               <div key={l.produit.id} className="flex items-center justify-between">
@@ -246,7 +249,7 @@ export default function NouvelleVentePage() {
         </div>
       )}
 
-      <div className="card mb-4">
+      <div className="bg-white border border-ink/10 rounded-3xl p-4 mb-4">
         <label className="block text-sm font-medium mb-1">Client (optionnel)</label>
         <select
           className="input-field mb-3"
@@ -285,18 +288,18 @@ export default function NouvelleVentePage() {
 
       {erreur && <p className="text-clay text-sm font-medium mb-3">{erreur}</p>}
 
-      <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-ink/10 p-4">
+      <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-ink/10 rounded-t-3xl shadow-2xl p-4">
         <div className="max-w-md mx-auto">
           <div className="flex items-center justify-between mb-3">
             <p className="text-ink/60">Total</p>
-            <p className="font-display text-xl font-bold text-indigo-deep">
+            <p className="font-display text-2xl font-bold text-indigo-deep">
               {total.toLocaleString("fr-FR")} FCFA
             </p>
           </div>
           <button
             onClick={validerVente}
             disabled={panier.length === 0 || envoi}
-            className="btn-primary w-full"
+className="w-full bg-bronze text-white font-display font-semibold text-[17px] rounded-2xl py-4 shadow-lg disabled:opacity-50"
           >
             {envoi ? "Enregistrement..." : "Valider la vente"}
           </button>

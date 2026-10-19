@@ -7,6 +7,7 @@ import { commerceActuel } from "@/lib/business";
 import PlanRequis from "@/components/PlanRequis";
 
 function BottomNav() {
+  const actif = "/rapports";
   const items = [
     { href: "/tableau-de-bord", label: "Accueil", icone: "🏠" },
     { href: "/produits", label: "Produits", icone: "📦" },
@@ -21,7 +22,7 @@ function BottomNav() {
           <a
             key={item.href}
             href={item.href}
-            className="flex flex-col items-center gap-0.5 py-2.5 text-[11px] font-medium text-ink/40"
+            className={`flex flex-col items-center gap-0.5 py-2.5 text-[11px] ${item.href === actif ? "font-bold text-indigo-deep" : "font-medium text-ink/40"}`}
           >
             <span className="text-lg leading-none">{item.icone}</span>
             {item.label}
@@ -188,7 +189,8 @@ function RapportsPage() {
 
   return (
     <main className="min-h-screen bg-bone px-5 py-8 max-w-md mx-auto pb-28">
-      <h1 className="font-display text-2xl font-bold text-indigo-deep mb-5">Rapports</h1>
+      <h1 className="font-display text-2xl font-bold text-indigo-deep">Rapports</h1>
+      <p className="text-sm text-ink/50 mb-5">Vos ventes et vos bénéfices, en clair.</p>
 
       <div className="flex gap-2 mb-5 overflow-x-auto">
         {(
@@ -202,8 +204,8 @@ function RapportsPage() {
           <button
             key={val}
             onClick={() => setPeriode(val)}
-            className={`px-3 py-2 rounded-full text-sm font-medium whitespace-nowrap ${
-              periode === val ? "bg-indigo-deep text-bone" : "bg-white text-ink/60 border border-ink/10"
+            className={`px-4 py-2 rounded-full text-sm font-semibold whitespace-nowrap ${
+              periode === val ? "bg-indigo-deep text-bone shadow-md" : "bg-white text-ink/60 border border-ink/10"
             }`}
           >
             {label}
@@ -233,25 +235,25 @@ function RapportsPage() {
       ) : (
         <>
           <div className="grid grid-cols-2 gap-3 mb-4">
-            <div className="card col-span-2 bg-indigo-deep text-bone">
+            <div className="col-span-2 rounded-3xl p-5 text-bone shadow-lg bg-gradient-to-br from-indigo-deep to-ink">
               <p className="text-bone/70 text-sm">Ventes sur la période</p>
-              <p className="font-display text-3xl font-bold mt-1">
+              <p className="font-display text-4xl font-bold mt-1 mb-2">
                 {totalVentes.toLocaleString("fr-FR")} FCFA
               </p>
-              <p className="text-bone/60 text-xs mt-1">{nbVentes} vente(s)</p>
+              <span className="inline-block bg-white/15 rounded-full text-xs px-3 py-1">🛒 {nbVentes} vente(s)</span>
             </div>
 
             {estProprietaire && benefice !== null && (
-              <div className="card col-span-2">
-                <p className="text-ink/50 text-sm">Bénéfice estimé</p>
+              <div className="col-span-2 bg-bronze/10 border border-bronze/40 rounded-3xl p-4">
+                <p className="text-ink/60 text-sm">💰 Bénéfice estimé</p>
                 <p className="font-display text-2xl font-bold mt-1 text-bronze">
                   {benefice.toLocaleString("fr-FR")} FCFA
                 </p>
               </div>
             )}
 
-            <div className="card">
-              <p className="text-ink/50 text-sm">Valeur du stock</p>
+            <div className="bg-white border border-ink/10 rounded-3xl p-4">
+              <p className="text-ink/50 text-sm">📦 Valeur du stock</p>
               <p className="font-display text-lg font-bold mt-1 text-indigo-deep">
                 {valeurStockVente.toLocaleString("fr-FR")} FCFA
               </p>
@@ -259,8 +261,8 @@ function RapportsPage() {
             </div>
 
             {estProprietaire && valeurStockAchat !== null && (
-              <div className="card">
-                <p className="text-ink/50 text-sm">Valeur d&apos;achat</p>
+              <div className="bg-white border border-ink/10 rounded-3xl p-4">
+                <p className="text-ink/50 text-sm">🏷️ Valeur d&apos;achat</p>
                 <p className="font-display text-lg font-bold mt-1 text-indigo-deep">
                   {valeurStockAchat.toLocaleString("fr-FR")} FCFA
                 </p>
@@ -269,17 +271,18 @@ function RapportsPage() {
             )}
           </div>
 
-          <div className="card">
+          <div className="bg-white border border-ink/10 rounded-3xl p-4">
             <p className="font-display font-semibold text-indigo-deep mb-3">
-              Produits les plus vendus
+              🏆 Produits les plus vendus
             </p>
             {topProduits.length === 0 ? (
               <p className="text-ink/50 text-sm">Aucune vente sur cette période.</p>
             ) : (
               <div className="space-y-3">
                 {topProduits.map((p, i) => (
-                  <div key={i} className="flex items-center justify-between">
-                    <div>
+                  <div key={i} className="flex items-center gap-3">
+                    <span className="flex-none w-7 h-7 rounded-full bg-indigo-deep text-bone text-xs font-bold flex items-center justify-center">{i + 1}</span>
+                    <div className="flex-1">
                       <p className="text-sm font-medium">{p.nom}</p>
                       <p className="text-xs text-ink/50">{p.quantite} vendu(s)</p>
                     </div>
