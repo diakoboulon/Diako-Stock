@@ -6,6 +6,7 @@ import { supabase } from "@/lib/supabase";
 import { infoAbonnement, InfoAbonnement } from "@/lib/plans";
 
 function BottomNav() {
+  const actif = "/tableau-de-bord";
   const items = [
     { href: "/tableau-de-bord", label: "Accueil", icone: "🏠" },
     { href: "/produits", label: "Produits", icone: "📦" },
@@ -20,7 +21,7 @@ function BottomNav() {
           <a
             key={item.href}
             href={item.href}
-            className="flex flex-col items-center gap-0.5 py-2.5 text-[11px] font-medium text-ink/40"
+            className={`flex flex-col items-center gap-0.5 py-2.5 text-[11px] ${item.href === actif ? "font-bold text-indigo-deep" : "font-medium text-ink/40"}`}
           >
             <span className="text-lg leading-none">{item.icone}</span>
             {item.label}
@@ -35,6 +36,7 @@ type Resume = {
   prenom: string;
   commerce: string;
   ventesAujourdhui: number;
+  nbVentes: number;
   nbProduits: number;
   produitsRupture: number;
   produitsFaibles: number;
@@ -91,6 +93,7 @@ export default function TableauDeBordPage() {
           .eq("actif", true),
       ]);
 
+      const nbVentes = ventesJour?.length ?? 0;
       const ventesAujourdhui = (ventesJour ?? []).reduce(
         (s, v) => s + (v.total ?? 0),
         0
@@ -109,6 +112,7 @@ export default function TableauDeBordPage() {
         prenom: profil?.prenom ?? "",
         commerce: (membre.businesses as any)?.nom ?? "",
         ventesAujourdhui,
+        nbVentes,
         nbProduits,
         produitsRupture,
         produitsFaibles,
@@ -146,53 +150,76 @@ export default function TableauDeBordPage() {
         </button>
       </header> 
 
-      <section className="grid grid-cols-2 gap-3 mb-4">
-        <div className="card col-span-2 bg-indigo-deep text-bone">
+      <section className="mb-4">
+        <div className="rounded-3xl p-5 mb-3 text-bone shadow-lg bg-gradient-to-br from-indigo-deep to-ink">
           <p className="text-bone/70 text-sm">Ventes aujourd&apos;hui</p>
-          <p className="font-display text-3xl font-bold mt-1">
+          <p className="font-display text-4xl font-bold mt-1 mb-2">
             {resume.ventesAujourdhui.toLocaleString("fr-FR")} FCFA
           </p>
+          <span className="inline-block bg-white/15 rounded-full text-xs px-3 py-1">
+            🛒 {resume.nbVentes === 0 ? "Aucune vente pour l'instant" : `${resume.nbVentes} vente${resume.nbVentes > 1 ? "s" : ""} aujourd'hui`}
+          </span>
         </div>
 
-        <div className="card">
-          <p className="text-ink/50 text-sm">Produits</p>
-          <p className="font-display text-2xl font-bold mt-1">
-            {resume.nbProduits}
-          </p>
-        </div>
-
-        <div className="card">
-          <p className="text-ink/50 text-sm">Stock faible</p>
-          <p className="font-display text-2xl font-bold mt-1 text-bronze">
-            {resume.produitsFaibles}
-          </p>
-        </div>
-
-        <div className="card col-span-2">
-          <p className="text-ink/50 text-sm">Ruptures de stock</p>
-          <p className="font-display text-2xl font-bold mt-1 text-clay">
-            {resume.produitsRupture}
-          </p>
+        <div className="grid grid-cols-3 gap-2.5">
+          <div className="bg-white border border-ink/10 rounded-2xl p-3.5">
+            <p className="text-xl">📦</p>
+            <p className="font-display text-2xl font-bold mt-1">{resume.nbProduits}</p>
+            <p className="text-xs text-ink/50">Produits</p>
+          </div>
+          <div className={`rounded-2xl p-3.5 border ${resume.produitsFaibles > 0 ? "bg-bronze/10 border-bronze/40" : "bg-white border-ink/10"}`}>
+            <p className="text-xl">⚠️</p>
+            <p className={`font-display text-2xl font-bold mt-1 ${resume.produitsFaibles > 0 ? "text-bronze" : ""}`}>{resume.produitsFaibles}</p>
+            <p className="text-xs text-ink/50">Stock faible</p>
+          </div>
+          <div className={`rounded-2xl p-3.5 border ${resume.produitsRupture > 0 ? "bg-clay/10 border-clay/40" : "bg-white border-ink/10"}`}>
+            <p className="text-xl">🚫</p>
+            <p className={`font-display text-2xl font-bold mt-1 ${resume.produitsRupture > 0 ? "text-clay" : ""}`}>{resume.produitsRupture}</p>
+            <p className="text-xs text-ink/50">Ruptures</p>
+          </div>
         </div>
       </section>
 
-      {abonnement && (
-        <a href="/abonnement" className="card flex items-center justify-between mb-4">
-          <div>
-            <p className="text-ink/50 text-sm">Mon plan</p>
-            <p className="font-display font-bold text-indigo-deep">
-              {abonnement.plan.nom} · {abonnement.nbProduits}/{abonnement.plan.limite ?? "∞"} produits
-            </p>
-          </div>
-          <span className="text-sm font-semibold text-bronze">
-            {abonnement.plan.id === "business" ? "Gérer" : "Améliorer →"}
+      {resume.produitsFaibles + resume.produitsRupture > 0 && (
+        <a href="/produits" className="flex items-center gap-2.5 bg-bronze/10 border border-bronze/40 rounded-2xl px-4 py-3 text-sm mb-4">
+          <span>🔔</span>
+          <span>
+            <b className="text-bronze">{resume.produitsFaibles + resume.produitsRupture} produit{resume.produitsFaibles + resume.produitsRupture > 1 ? "s" : ""}</b> à réapprovisionner
           </span>
+          <span className="ml-auto text-bronze font-semibold text-[13px]">Voir →</span>
+        </a>
+      )}
+
+      {abonnement && (
+        <a href="/abonnement" className="block bg-white border border-ink/10 rounded-3xl p-4 mb-4">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-ink/50 text-sm">Mon plan</p>
+              <p className="font-display text-lg font-bold text-indigo-deep">{abonnement.plan.nom}</p>
+            </div>
+            <span className="text-sm font-semibold text-bronze">
+              {abonnement.plan.id === "business" ? "Gérer" : "Améliorer →"}
+            </span>
+          </div>
+          {abonnement.plan.limite !== null && (
+            <>
+              <div className="h-2 bg-bone rounded-full mt-3 overflow-hidden">
+                <div
+                  className="h-full bg-indigo-deep rounded-full"
+                  style={{ width: `${Math.min(100, Math.round((abonnement.nbProduits / abonnement.plan.limite) * 100))}%` }}
+                />
+              </div>
+              <p className="text-xs text-ink/50 mt-1.5">
+                {abonnement.nbProduits} produit{abonnement.nbProduits > 1 ? "s" : ""} sur {abonnement.plan.limite} utilisés
+              </p>
+            </>
+          )}
         </a>
       )}
 
       <a
         href="/ventes/nouvelle"
-        className="btn-primary w-full fixed bottom-20 left-1/2 -translate-x-1/2 max-w-md w-[calc(100%-2.5rem)] shadow-lg text-center block"
+        className="bg-bronze text-white font-display font-semibold text-[17px] rounded-2xl px-5 py-4 w-full fixed bottom-20 left-1/2 -translate-x-1/2 max-w-md w-[calc(100%-2.5rem)] shadow-lg text-center block"
       >
         + Nouvelle vente
       </a>
