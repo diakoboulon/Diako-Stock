@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabase";
 import { commerceActuel } from "@/lib/business";
+import PlanRequis from "@/components/PlanRequis";
 
 function BottomNav() {
   const items = [
@@ -39,7 +40,15 @@ type Client = {
   adresse: string | null;
 };
 
-export default function ClientsPage() {
+export default function ClientsPageProtegee() {
+  return (
+    <PlanRequis minimum="standard" fonction="Fichier clients">
+      <ClientsPage />
+    </PlanRequis>
+  );
+}
+
+function ClientsPage() {
   const router = useRouter();
   const [businessId, setBusinessId] = useState<string | null>(null);
   const [estProprietaire, setEstProprietaire] = useState(false);

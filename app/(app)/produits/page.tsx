@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabase";
 import { commerceActuel } from "@/lib/business";
+import { infoAbonnement, InfoAbonnement } from "@/lib/plans";
 
 function BottomNav() {
   const items = [
@@ -51,8 +52,10 @@ export default function ProduitsPage() {
   const [recherche, setRecherche] = useState("");
   const [chargement, setChargement] = useState(true);
   const [formOuvert, setFormOuvert] = useState(false);
+  const [abonnement, setAbonnement] = useState<InfoAbonnement | null>(null);
 
   async function chargerTout(bId: string) {
+    infoAbonnement(bId).then(setAbonnement);
     const [{ data: p }, { data: c }] = await Promise.all([
       supabase
         .from("products")
@@ -80,6 +83,9 @@ export default function ProduitsPage() {
     init();
   }, [router]);
 
+  const limiteAtteinte =
+    !!abonnement && abonnement.plan.limite !== null && abonnement.nbProduits >= abonnement.plan.limite;
+
   const produitsFiltres = produits.filter((p) =>
     p.nom.toLowerCase().includes(recherche.toLowerCase())
   );
@@ -88,13 +94,46 @@ export default function ProduitsPage() {
     <main className="min-h-screen bg-bone px-5 py-8 max-w-md mx-auto pb-28">
       <header className="mb-5 flex items-center justify-between">
         <h1 className="font-display text-2xl font-bold text-indigo-deep">Mes produits</h1>
-        <button
-          onClick={() => setFormOuvert(true)}
-          className="bg-indigo-deep text-bone text-sm font-semibold px-4 py-2 rounded-xl"
-        >
-          + Ajouter
-        </button>
+        {limiteAtteinte ? (
+          <a
+            href="/abonnement"
+            className="bg-bronze text-white text-sm font-semibold px-4 py-2 rounded-xl"
+          >
+            ⬆ Augmenter
+          </a>
+        ) : (
+          <button
+            onClick={() => setFormOuvert(true)}
+            className="bg-indigo-deep text-bone text-sm font-semibold px-4 py-2 rounded-xl"
+          >
+            + Ajouter
+          </button>
+        )}
       </header>
+
+      {abonnement && (
+        <a href="/abonnement" className="card block mb-4 py-3">
+          <div className="flex justify-between text-sm mb-1.5">
+            <span className="text-ink/60">Plan {abonnement.plan.nom}</span>
+            <span className="font-semibold">
+              {abonnement.nbProduits} / {abonnement.plan.limite ?? "illimité"} produits
+            </span>
+          </div>
+          {abonnement.plan.limite && (
+            <div className="h-2 bg-ink/10 rounded-full overflow-hidden">
+              <div
+                className={`h-full rounded-full ${limiteAtteinte ? "bg-clay" : "bg-indigo-deep"}`}
+                style={{ width: `${Math.min(100, Math.round((abonnement.nbProduits / abonnement.plan.limite) * 100))}%` }}
+              />
+            </div>
+          )}
+          {limiteAtteinte && (
+            <p className="text-xs text-clay mt-2 font-medium">
+              Limite atteinte — touchez ici pour passer au plan supérieur.
+            </p>
+          )}
+        </a>
+      )}
 
       <input
         className="input-field mb-5"
@@ -228,7 +267,12 @@ function FormulaireProduit({
 
       onCree();
     } catch (err: any) {
-      setErreur(err.message ?? "Une erreur est survenue.");
+      const message: string = err.message ?? "Une erreur est survenue.";
+      setErreur(
+        message.includes("LIMITE_PLAN")
+          ? message.replace("LIMITE_PLAN: ", "")
+          : message
+      );
       setEnvoi(false);
     }
   }
@@ -318,7 +362,14 @@ function FormulaireProduit({
             onChange={(e) => setSeuilAlerte(e.target.value)}
           />
 
-          {erreur && <p className="text-clay text-sm font-medium">{erreur}</p>}
+          {erreur && (
+            <p className="text-clay text-sm font-medium">
+              {erreur}
+              {erreur.includes("plan") && (
+                <a href="/abonnement" className="block underline mt-1">Voir les plans</a>
+              )}
+            </p>
+          )}
 
           <div className="flex gap-3 pt-2">
             <button

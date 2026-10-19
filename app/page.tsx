@@ -132,6 +132,12 @@ function PageAccueil() {
           >
             J&apos;ai déjà un compte
           </Link>
+          <Link
+            href="/tarifs"
+            className="block w-full text-center py-1 text-bronze font-semibold"
+          >
+            Voir les tarifs
+          </Link>
         </div>
       </section>
 

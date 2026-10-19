@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabase";
+import { infoAbonnement, InfoAbonnement } from "@/lib/plans";
 
 function BottomNav() {
   const items = [
@@ -43,6 +44,7 @@ export default function TableauDeBordPage() {
   const router = useRouter();
   const [resume, setResume] = useState<Resume | null>(null);
   const [chargement, setChargement] = useState(true);
+  const [abonnement, setAbonnement] = useState<InfoAbonnement | null>(null);
 
   useEffect(() => {
     async function charger() {
@@ -72,6 +74,7 @@ export default function TableauDeBordPage() {
         .maybeSingle();
 
       const businessId = membre.business_id as string;
+      infoAbonnement(businessId).then(setAbonnement);
       const debutJour = new Date();
       debutJour.setHours(0, 0, 0, 0);
 
@@ -172,6 +175,20 @@ export default function TableauDeBordPage() {
           </p>
         </div>
       </section>
+
+      {abonnement && (
+        <a href="/abonnement" className="card flex items-center justify-between mb-4">
+          <div>
+            <p className="text-ink/50 text-sm">Mon plan</p>
+            <p className="font-display font-bold text-indigo-deep">
+              {abonnement.plan.nom} · {abonnement.nbProduits}/{abonnement.plan.limite ?? "∞"} produits
+            </p>
+          </div>
+          <span className="text-sm font-semibold text-bronze">
+            {abonnement.plan.id === "business" ? "Gérer" : "Améliorer →"}
+          </span>
+        </a>
+      )}
 
       <a
         href="/ventes/nouvelle"

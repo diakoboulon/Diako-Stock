@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabase";
 import { commerceActuel } from "@/lib/business";
+import PlanRequis from "@/components/PlanRequis";
 
 function BottomNav() {
   const items = [
@@ -42,7 +43,15 @@ function debutPeriode(periode: Periode, debutPerso: string): Date {
   return d;
 }
 
-export default function RapportsPage() {
+export default function RapportsPageProtegee() {
+  return (
+    <PlanRequis minimum="standard" fonction="Rapports et bénéfices">
+      <RapportsPage />
+    </PlanRequis>
+  );
+}
+
+function RapportsPage() {
   const router = useRouter();
   const [businessId, setBusinessId] = useState<string | null>(null);
   const [estProprietaire, setEstProprietaire] = useState(false);
