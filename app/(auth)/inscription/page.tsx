@@ -76,89 +76,97 @@ export default function InscriptionPage() {
   }
 
   return (
-    <main className="min-h-screen px-6 py-10 max-w-sm mx-auto">
-      <h1 className="font-display text-2xl font-bold text-indigo-deep mb-1">
-        Créer votre commerce
-      </h1>
-      <p className="text-ink/60 mb-8">Quelques informations pour démarrer.</p>
+    <main className="min-h-screen bg-bone">
+      <header className="bg-gradient-to-br from-indigo-deep to-ink text-bone px-6 pt-10 pb-20 text-center rounded-b-[32px]">
+        <Link href="/" className="font-display text-sm tracking-widest text-bronze font-semibold">DIAKO STOCK</Link>
+        <h1 className="font-display text-[26px] font-bold mt-3 mb-1">Créer votre commerce</h1>
+        <p className="text-bone/75 text-sm">Gratuit jusqu&apos;à 10 produits, en moins de 2 minutes.</p>
+      </header>
 
-      <form onSubmit={creerCompte} className="space-y-4">
-        <div className="grid grid-cols-2 gap-3">
+      <div className="px-5 -mt-12 max-w-sm mx-auto pb-10">
+        <form onSubmit={creerCompte} className="bg-white rounded-3xl border border-ink/10 shadow-xl shadow-ink/5 p-5 space-y-3.5">
+          <p className="text-xs font-semibold tracking-wide text-bronze uppercase">👤 Vous</p>
+          <div className="grid grid-cols-2 gap-3">
+            <input
+              required
+              placeholder="Prénom"
+              className="input-field"
+              value={form.prenom}
+              onChange={(e) => majChamp("prenom", e.target.value)}
+            />
+            <input
+              required
+              placeholder="Nom"
+              className="input-field"
+              value={form.nom}
+              onChange={(e) => majChamp("nom", e.target.value)}
+            />
+          </div>
           <input
             required
-            placeholder="Prénom"
+            placeholder="Téléphone"
             className="input-field"
-            value={form.prenom}
-            onChange={(e) => majChamp("prenom", e.target.value)}
+            value={form.telephone}
+            onChange={(e) => majChamp("telephone", e.target.value)}
           />
           <input
             required
-            placeholder="Nom"
+            type="email"
+            placeholder="Email"
             className="input-field"
-            value={form.nom}
-            onChange={(e) => majChamp("nom", e.target.value)}
+            value={form.email}
+            onChange={(e) => majChamp("email", e.target.value)}
           />
-        </div>
-        <input
-          required
-          placeholder="Téléphone"
-          className="input-field"
-          value={form.telephone}
-          onChange={(e) => majChamp("telephone", e.target.value)}
-        />
-        <input
-          required
-          type="email"
-          placeholder="Email"
-          className="input-field"
-          value={form.email}
-          onChange={(e) => majChamp("email", e.target.value)}
-        />
-        <input
-          required
-          type="password"
-          placeholder="Mot de passe"
-          className="input-field"
-          value={form.motDePasse}
-          onChange={(e) => majChamp("motDePasse", e.target.value)}
-        />
+          <input
+            required
+            type="password"
+            placeholder="Mot de passe"
+            className="input-field"
+            value={form.motDePasse}
+            onChange={(e) => majChamp("motDePasse", e.target.value)}
+          />
 
-        <hr className="border-ink/10" />
+          <p className="text-xs font-semibold tracking-wide text-bronze uppercase pt-3">🏪 Votre commerce</p>
+          <input
+            required
+            placeholder="Nom du commerce"
+            className="input-field"
+            value={form.commerce}
+            onChange={(e) => majChamp("commerce", e.target.value)}
+          />
+          <input
+            required
+            placeholder="Ville"
+            className="input-field"
+            value={form.ville}
+            onChange={(e) => majChamp("ville", e.target.value)}
+          />
+          <input
+            placeholder="Quartier / adresse (facultatif)"
+            className="input-field"
+            value={form.adresse}
+            onChange={(e) => majChamp("adresse", e.target.value)}
+          />
 
-        <input
-          required
-          placeholder="Nom du commerce"
-          className="input-field"
-          value={form.commerce}
-          onChange={(e) => majChamp("commerce", e.target.value)}
-        />
-        <input
-          required
-          placeholder="Ville"
-          className="input-field"
-          value={form.ville}
-          onChange={(e) => majChamp("ville", e.target.value)}
-        />
-        <input
-          placeholder="Quartier / adresse"
-          className="input-field"
-          value={form.adresse}
-          onChange={(e) => majChamp("adresse", e.target.value)}
-        />
+          {erreur && <p className="text-clay text-sm font-medium">{erreur}</p>}
 
-        {erreur && <p className="text-clay text-sm font-medium">{erreur}</p>}
+          <button
+            type="submit"
+            disabled={chargement}
+            className="w-full bg-bronze text-white font-display font-semibold text-[17px] rounded-2xl py-4 shadow-lg disabled:opacity-50"
+          >
+            {chargement ? "Création..." : "Créer mon commerce"}
+          </button>
+          <p className="text-center text-xs text-ink/50">🔒 Vos données sont protégées. Aucun paiement demandé.</p>
+        </form>
 
-        <button type="submit" disabled={chargement} className="btn-primary w-full">
-          {chargement ? "Création..." : "Créer mon commerce"}
-        </button>
-      </form>
-
-      <p className="mt-6 text-center text-sm text-ink/60">
-        Déjà un compte ?{" "}
-        <Link href="/connexion" className="text-bronze font-semibold">
-          Se connecter
-        </Link>
-      </p>
+        <p className="mt-6 text-center text-sm text-ink/60">
+          Déjà un compte ?{" "}
+          <Link href="/connexion" className="text-bronze font-semibold">
+            Se connecter
+          </Link>
+        </p>
+      </div>
     </main>
   );
 }
