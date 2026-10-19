@@ -7,6 +7,7 @@ import { commerceActuel } from "@/lib/business";
 import { infoAbonnement, InfoAbonnement } from "@/lib/plans";
 
 function BottomNav() {
+  const actif = "/produits";
   const items = [
     { href: "/tableau-de-bord", label: "Accueil", icone: "🏠" },
     { href: "/produits", label: "Produits", icone: "📦" },
@@ -21,7 +22,7 @@ function BottomNav() {
           <a
             key={item.href}
             href={item.href}
-            className="flex flex-col items-center gap-0.5 py-2.5 text-[11px] font-medium text-ink/40"
+            className={`flex flex-col items-center gap-0.5 py-2.5 text-[11px] ${item.href === actif ? "font-bold text-indigo-deep" : "font-medium text-ink/40"}`}
           >
             <span className="text-lg leading-none">{item.icone}</span>
             {item.label}
@@ -93,18 +94,23 @@ export default function ProduitsPage() {
   return (
     <main className="min-h-screen bg-bone px-5 py-8 max-w-md mx-auto pb-28">
       <header className="mb-5 flex items-center justify-between">
-        <h1 className="font-display text-2xl font-bold text-indigo-deep">Mes produits</h1>
+        <div>
+          <h1 className="font-display text-2xl font-bold text-indigo-deep">Mes produits</h1>
+          <p className="text-sm text-ink/50">
+            {produits.length} produit{produits.length > 1 ? "s" : ""} en stock
+          </p>
+        </div>
         {limiteAtteinte ? (
           <a
             href="/abonnement"
-            className="bg-bronze text-white text-sm font-semibold px-4 py-2 rounded-xl"
+            className="bg-bronze text-white text-sm font-semibold px-4 py-2.5 rounded-2xl shadow-md"
           >
             ⬆ Augmenter
           </a>
         ) : (
           <button
             onClick={() => setFormOuvert(true)}
-            className="bg-indigo-deep text-bone text-sm font-semibold px-4 py-2 rounded-xl"
+            className="bg-bronze text-white text-sm font-semibold px-4 py-2.5 rounded-2xl shadow-md"
           >
             + Ajouter
           </button>
@@ -112,15 +118,15 @@ export default function ProduitsPage() {
       </header>
 
       {abonnement && (
-        <a href="/abonnement" className="card block mb-4 py-3">
-          <div className="flex justify-between text-sm mb-1.5">
-            <span className="text-ink/60">Plan {abonnement.plan.nom}</span>
+        <a href="/abonnement" className="block bg-white border border-ink/10 rounded-3xl px-4 py-3.5 mb-4">
+          <div className="flex justify-between text-sm mb-2">
+            <span className="text-ink/60">Plan <b className="text-indigo-deep">{abonnement.plan.nom}</b></span>
             <span className="font-semibold">
               {abonnement.nbProduits} / {abonnement.plan.limite ?? "illimité"} produits
             </span>
           </div>
           {abonnement.plan.limite && (
-            <div className="h-2 bg-ink/10 rounded-full overflow-hidden">
+            <div className="h-2 bg-bone rounded-full overflow-hidden">
               <div
                 className={`h-full rounded-full ${limiteAtteinte ? "bg-clay" : "bg-indigo-deep"}`}
                 style={{ width: `${Math.min(100, Math.round((abonnement.nbProduits / abonnement.plan.limite) * 100))}%` }}
@@ -135,18 +141,21 @@ export default function ProduitsPage() {
         </a>
       )}
 
-      <input
-        className="input-field mb-5"
-        placeholder="Rechercher un produit..."
-        value={recherche}
-        onChange={(e) => setRecherche(e.target.value)}
-      />
+      <div className="relative mb-5">
+        <span className="absolute left-4 top-1/2 -translate-y-1/2 text-ink/40">🔍</span>
+        <input
+          className="input-field pl-11"
+          placeholder="Rechercher un produit..."
+          value={recherche}
+          onChange={(e) => setRecherche(e.target.value)}
+        />
+      </div>
 
       {chargement ? (
         <p className="text-ink/50 text-center mt-10">Chargement...</p>
       ) : produitsFiltres.length === 0 ? (
-        <div className="card text-center py-10">
-          <p className="text-3xl mb-2">📦</p>
+        <div className="bg-white border border-ink/10 rounded-3xl text-center py-10 px-6">
+          <p className="text-4xl mb-2">📦</p>
           <p className="text-ink/60">
             {produits.length === 0
               ? "Aucun produit pour l'instant. Ajoutez le premier."
@@ -154,28 +163,45 @@ export default function ProduitsPage() {
           </p>
         </div>
       ) : (
-        <div className="space-y-2">
+        <div className="space-y-2.5">
           {produitsFiltres.map((p) => {
             const rupture = Number(p.quantite) === 0;
             const faible = !rupture && Number(p.quantite) <= Number(p.seuil_alerte);
             return (
-              <div key={p.id} className="card flex items-center justify-between">
-                <div>
-                  <p className="font-semibold text-ink">{p.nom}</p>
+              <div
+                key={p.id}
+                className={`bg-white rounded-2xl border p-4 flex items-center gap-3 ${
+                  rupture ? "border-clay/40" : faible ? "border-bronze/40" : "border-ink/10"
+                }`}
+              >
+                <span
+                  className={`flex-none w-11 h-11 rounded-2xl flex items-center justify-center text-xl ${
+                    rupture ? "bg-clay/10" : faible ? "bg-bronze/10" : "bg-indigo-deep/10"
+                  }`}
+                >
+                  📦
+                </span>
+                <div className="flex-1 min-w-0">
+                  <p className="font-semibold text-ink truncate">{p.nom}</p>
                   <p className="text-sm text-ink/50">
                     {p.prix_vente.toLocaleString("fr-FR")} FCFA · {p.unite}
                   </p>
                 </div>
                 <div className="text-right">
                   <p
-                    className={`font-display font-bold ${
+                    className={`font-display text-xl font-bold ${
                       rupture ? "text-clay" : faible ? "text-bronze" : "text-indigo-deep"
                     }`}
                   >
                     {p.quantite}
                   </p>
-                  {rupture && <p className="text-[11px] text-clay">Rupture</p>}
-                  {faible && !rupture && <p className="text-[11px] text-bronze">Stock faible</p>}
+                  {rupture ? (
+                    <p className="text-[11px] font-semibold text-clay">Rupture</p>
+                  ) : faible ? (
+                    <p className="text-[11px] font-semibold text-bronze">Stock faible</p>
+                  ) : (
+                    <p className="text-[11px] text-ink/40">en stock</p>
+                  )}
                 </div>
               </div>
             );
@@ -279,7 +305,7 @@ function FormulaireProduit({
 
   return (
     <div className="fixed inset-0 bg-ink/40 flex items-end sm:items-center justify-center z-50">
-      <div className="bg-bone rounded-t-2xl sm:rounded-2xl w-full max-w-sm max-h-[90vh] overflow-y-auto p-6">
+      <div className="bg-bone rounded-t-3xl sm:rounded-3xl w-full max-w-sm max-h-[90vh] overflow-y-auto p-6">
         <h2 className="font-display text-xl font-bold text-indigo-deep mb-4">
           Nouveau produit
         </h2>
@@ -379,7 +405,7 @@ function FormulaireProduit({
             >
               Annuler
             </button>
-            <button type="submit" disabled={envoi} className="btn-primary flex-1">
+            <button type="submit" disabled={envoi} className="flex-1 bg-bronze text-white font-display font-semibold rounded-xl py-3 disabled:opacity-50">
               {envoi ? "Enregistrement..." : "Enregistrer"}
             </button>
           </div>
