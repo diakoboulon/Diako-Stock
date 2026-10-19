@@ -108,67 +108,92 @@ function DemoStock() {
 function PageAccueil() {
   return (
     <main className="min-h-screen bg-bone">
-      <section className="px-6 pt-14 pb-16 max-w-md mx-auto text-center">
-        <p className="font-display text-sm tracking-wide text-bronze font-semibold mb-3">
-          Diako Stock
-        </p>
-        <h1 className="font-display text-3xl font-bold text-indigo-deep leading-tight mb-4">
-          Votre commerce, sous contrôle, à chaque instant.
-        </h1>
-        <p className="text-ink/60 mb-10">
-          Suivez votre stock, vos ventes et vos bénéfices depuis votre téléphone —
-          aussi simplement que de tenir votre cahier.
-        </p>
-
-        <DemoStock />
-
-        <div className="mt-10 space-y-3">
-          <Link href="/inscription" className="btn-primary w-full block">
-            Créer mon commerce
-          </Link>
-          <Link
-            href="/connexion"
-            className="block w-full text-center py-3 text-ink/60 font-medium"
-          >
-            J&apos;ai déjà un compte
-          </Link>
-          <Link
-            href="/tarifs"
-            className="block w-full text-center py-1 text-bronze font-semibold"
-          >
-            Voir les tarifs
-          </Link>
+      <section className="bg-gradient-to-br from-indigo-deep to-ink text-bone px-6 pt-12 pb-24 text-center rounded-b-[36px]">
+        <div className="max-w-md mx-auto">
+          <p className="font-display text-sm tracking-widest text-bronze font-semibold mb-3">DIAKO STOCK</p>
+          <h1 className="font-display text-[32px] font-bold leading-tight mb-4">
+            Votre commerce, sous contrôle, à chaque instant.
+          </h1>
+          <p className="text-bone/80">
+            Suivez votre stock, vos ventes et vos bénéfices depuis votre téléphone, aussi simplement que de tenir votre cahier.
+          </p>
+          <div className="flex flex-wrap justify-center gap-2 mt-5">
+            {["Gratuit pour commencer", "Sur téléphone", "En français"].map((t) => (
+              <span key={t} className="bg-white/15 text-xs px-3 py-1.5 rounded-full">✓ {t}</span>
+            ))}
+          </div>
         </div>
       </section>
 
-      <section className="px-6 pb-16 max-w-md mx-auto grid grid-cols-1 gap-4">
-        <div className="card">
-          <p className="text-2xl mb-2">📦</p>
-          <h2 className="font-display font-semibold text-indigo-deep mb-1">
-            Le stock se met à jour tout seul
-          </h2>
-          <p className="text-sm text-ink/60">
-            Chaque vente diminue le stock, chaque achat l&apos;augmente — sans calcul à refaire.
-          </p>
+      <div className="px-5 -mt-14">
+        <DemoStock />
+      </div>
+
+      <section className="px-5 max-w-md mx-auto">
+        <div className="mt-7">
+          <Link
+            href="/inscription"
+            className="block text-center bg-bronze text-white font-display font-semibold text-[17px] rounded-2xl py-4 shadow-lg"
+          >
+            Créer mon commerce
+          </Link>
+          <p className="text-center text-[13px] text-ink/50 mt-1.5">Gratuit jusqu&apos;à 10 produits</p>
+          <Link href="/connexion" className="block text-center py-3.5 text-ink/60 font-medium">
+            J&apos;ai déjà un compte
+          </Link>
         </div>
-        <div className="card">
-          <p className="text-2xl mb-2">⚠️</p>
-          <h2 className="font-display font-semibold text-indigo-deep mb-1">
-            Alertes avant la rupture
-          </h2>
-          <p className="text-sm text-ink/60">
-            Diako Stock vous prévient dès qu&apos;un article se fait rare.
-          </p>
+
+        <h2 className="font-display text-2xl font-bold text-indigo-deep text-center mt-10 mb-5">Comment ça marche</h2>
+        <div className="space-y-4">
+          {[
+            ["Ajoutez vos produits", "Nom, prix et quantité en stock."],
+            ["Enregistrez vos ventes", "Le stock baisse tout seul à chaque vente."],
+            ["Suivez vos bénéfices", "Vos chiffres, en clair, chaque jour."],
+          ].map(([t, d], i) => (
+            <div key={t} className="flex gap-3.5 items-start">
+              <span className="flex-none w-9 h-9 rounded-full bg-indigo-deep text-bone font-display font-bold flex items-center justify-center">{i + 1}</span>
+              <div>
+                <p className="font-display font-semibold text-indigo-deep">{t}</p>
+                <p className="text-sm text-ink/60">{d}</p>
+              </div>
+            </div>
+          ))}
         </div>
-        <div className="card">
-          <p className="text-2xl mb-2">📊</p>
-          <h2 className="font-display font-semibold text-indigo-deep mb-1">
-            Vos chiffres, en clair
-          </h2>
-          <p className="text-sm text-ink/60">
-            Ventes, bénéfices et produits qui marchent le mieux, d&apos;un coup d&apos;œil.
-          </p>
+
+        <h2 className="font-display text-2xl font-bold text-indigo-deep text-center mt-12 mb-5">Tout pour votre boutique</h2>
+        <div className="space-y-3">
+          {[
+            ["📦", "bg-indigo-deep/10", "Le stock se met à jour tout seul", "Chaque vente diminue le stock, chaque achat l'augmente, sans calcul à refaire."],
+            ["⚠️", "bg-bronze/15", "Alertes avant la rupture", "Diako Stock vous prévient dès qu'un article se fait rare."],
+            ["📊", "bg-green-600/10", "Vos chiffres, en clair", "Ventes, bénéfices et produits qui marchent le mieux, d'un coup d'œil."],
+            ["💬", "bg-green-500/10", "Reçus sur WhatsApp", "Envoyez le reçu à votre client en un geste."],
+          ].map(([ic, bg, t, d]) => (
+            <div key={t} className="bg-white border border-ink/10 rounded-3xl p-4 flex gap-3.5">
+              <span className={`flex-none w-12 h-12 rounded-2xl flex items-center justify-center text-2xl ${bg}`}>{ic}</span>
+              <div>
+                <h3 className="font-display font-semibold text-indigo-deep">{t}</h3>
+                <p className="text-sm text-ink/60">{d}</p>
+              </div>
+            </div>
+          ))}
         </div>
+
+        <div className="bg-white border-2 border-bronze rounded-3xl p-6 text-center mt-5">
+          <p className="font-display text-xl font-bold text-indigo-deep">À partir de 0 FCFA</p>
+          <p className="text-sm text-ink/60 mt-1.5 mb-3">
+            Plan Gratuit sans limite de durée. Passez au Standard (5 000 FCFA par mois) quand votre commerce grandit.
+          </p>
+          <Link href="/tarifs" className="text-bronze font-semibold">Voir les tarifs →</Link>
+        </div>
+
+        <div className="bg-gradient-to-br from-indigo-deep to-ink text-bone rounded-[28px] p-7 text-center mt-10 mb-6">
+          <h2 className="font-display text-[22px] font-bold mb-2">Prêt à garder votre stock sous contrôle ?</h2>
+          <p className="text-sm text-bone/80 mb-5">Créez votre commerce en moins de 2 minutes.</p>
+          <Link href="/inscription" className="block bg-bronze text-white font-display font-semibold text-[17px] rounded-2xl py-4">
+            Créer mon commerce
+          </Link>
+        </div>
+        <p className="text-center text-xs text-ink/50 pb-8">Diako Stock · Fait au Mali 🇲🇱</p>
       </section>
     </main>
   );
