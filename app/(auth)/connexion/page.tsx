@@ -22,7 +22,10 @@ export default function ConnexionPage() {
     });
     setChargement(false);
     if (error) {
-      setErreur("Email ou mot de passe incorrect.");
+      const m = (error.message || "").toLowerCase();
+      if (m.includes("invalid login credentials")) setErreur("Email ou mot de passe incorrect.");
+      else if (m.includes("not confirmed")) setErreur("Votre e-mail n'est pas encore confirmé. Ouvrez le lien reçu par e-mail.");
+      else setErreur("Connexion impossible : " + error.message);
       return;
     }
     router.push("/tableau-de-bord");
