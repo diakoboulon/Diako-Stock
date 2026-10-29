@@ -65,6 +65,9 @@ export default function ConnexionPage() {
           </div>
 
           {erreur && <p className="text-clay text-sm font-medium">{erreur}</p>}
+          <p className="text-right text-sm">
+            <Link href="/mot-de-passe-oublie" className="text-bronze font-semibold">Mot de passe oublié ?</Link>
+          </p>
 
           <button
             type="submit"
