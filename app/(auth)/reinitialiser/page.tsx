@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabase";
+import ChampMotDePasse from "@/components/ChampMotDePasse";
 
 export default function ReinitialiserPage() {
   const router = useRouter();
@@ -50,11 +51,11 @@ export default function ReinitialiserPage() {
             <>
               <div>
                 <label className="block text-sm font-medium mb-1">Nouveau mot de passe</label>
-                <input type="password" required minLength={8} className="input-field" value={mdp} onChange={(e) => setMdp(e.target.value)} placeholder="8 caractères minimum" />
+                <ChampMotDePasse required minLength={8} autoComplete="new-password" value={mdp} onChange={setMdp} placeholder="8 caractères minimum" />
               </div>
               <div>
                 <label className="block text-sm font-medium mb-1">Répétez le mot de passe</label>
-                <input type="password" required minLength={8} className="input-field" value={mdp2} onChange={(e) => setMdp2(e.target.value)} />
+                <ChampMotDePasse required minLength={8} autoComplete="new-password" value={mdp2} onChange={setMdp2} />
               </div>
               {erreur && <p className="text-clay text-sm font-medium">{erreur}</p>}
               <button type="submit" disabled={chargement} className="w-full bg-bronze text-white font-display font-semibold text-[17px] rounded-2xl py-4 shadow-lg disabled:opacity-50">

@@ -4,6 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabase";
+import ChampMotDePasse from "@/components/ChampMotDePasse";
 
 export default function ConnexionPage() {
   const router = useRouter();
@@ -54,14 +55,7 @@ export default function ConnexionPage() {
           </div>
           <div>
             <label className="block text-sm font-medium mb-1">Mot de passe</label>
-            <input
-              type="password"
-              required
-              className="input-field"
-              value={motDePasse}
-              onChange={(e) => setMotDePasse(e.target.value)}
-              placeholder="••••••••"
-            />
+            <ChampMotDePasse required autoComplete="current-password" value={motDePasse} onChange={setMotDePasse} placeholder="••••••••" />
           </div>
 
           {erreur && <p className="text-clay text-sm font-medium">{erreur}</p>}

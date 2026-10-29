@@ -4,6 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabase";
+import ChampMotDePasse from "@/components/ChampMotDePasse";
 
 export default function InscriptionPage() {
   const router = useRouter();
@@ -117,14 +118,7 @@ export default function InscriptionPage() {
             value={form.email}
             onChange={(e) => majChamp("email", e.target.value)}
           />
-          <input
-            required
-            type="password"
-            placeholder="Mot de passe"
-            className="input-field"
-            value={form.motDePasse}
-            onChange={(e) => majChamp("motDePasse", e.target.value)}
-          />
+          <ChampMotDePasse required autoComplete="new-password" placeholder="Mot de passe" value={form.motDePasse} onChange={(v) => majChamp("motDePasse", v)} />
 
           <p className="text-xs font-semibold tracking-wide text-bronze uppercase pt-3">🏪 Votre commerce</p>
           <input
