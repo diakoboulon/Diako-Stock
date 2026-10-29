@@ -81,7 +81,7 @@ export default function InscriptionPage() {
       <header className="bg-gradient-to-br from-indigo-deep to-ink text-bone px-6 pt-10 pb-20 text-center rounded-b-[32px]">
         <Link href="/" className="font-display text-sm tracking-widest text-bronze font-semibold">DIAKO STOCK</Link>
         <h1 className="font-display text-[26px] font-bold mt-3 mb-1">Créer votre commerce</h1>
-        <p className="text-bone/75 text-sm">Gratuit jusqu&apos;à 10 produits, en moins de 2 minutes.</p>
+        <p className="text-bone/75 text-sm">Gratuit jusqu&apos;à 5 produits, en moins de 2 minutes.</p>
       </header>
 
       <div className="px-5 -mt-12 max-w-sm mx-auto pb-10">

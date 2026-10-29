@@ -7,7 +7,7 @@ export const metadata = {
 };
 
 const QUESTIONS = [
-  ["Puis-je rester gratuit ?", "Oui. Le plan Gratuit est sans limite de durée, jusqu'à 10 produits."],
+  ["Puis-je rester gratuit ?", "Oui. Le plan Gratuit est sans limite de durée, jusqu'à 5 produits."],
   ["Comment je paie ?", "Par Orange Money, sur Diakoboulon. Votre plan s'active tout seul après le paiement."],
   ["Puis-je changer de plan ?", "Oui, à tout moment. Vous passez au plan supérieur quand votre commerce grandit."],
   ["Et si je ne renouvelle pas ?", "Vos données restent là. Vous repassez simplement au plan Gratuit."],

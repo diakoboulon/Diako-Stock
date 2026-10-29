@@ -137,7 +137,7 @@ function PageAccueil() {
           >
             Créer mon commerce
           </Link>
-          <p className="text-center text-[13px] text-ink/50 mt-1.5">Gratuit jusqu&apos;à 10 produits</p>
+          <p className="text-center text-[13px] text-ink/50 mt-1.5">Gratuit jusqu&apos;à 5 produits</p>
           <Link href="/connexion" className="block text-center py-3.5 text-ink/60 font-medium">
             J&apos;ai déjà un compte
           </Link>
