@@ -47,6 +47,7 @@ export default function ConnexionPage() {
             <input
               type="email"
               required
+              autoComplete="off"
               className="input-field"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
@@ -55,7 +56,7 @@ export default function ConnexionPage() {
           </div>
           <div>
             <label className="block text-sm font-medium mb-1">Mot de passe</label>
-            <ChampMotDePasse required autoComplete="current-password" value={motDePasse} onChange={setMotDePasse} placeholder="••••••••" />
+            <ChampMotDePasse required autoComplete="new-password" value={motDePasse} onChange={setMotDePasse} placeholder="••••••••" />
           </div>
 
           {erreur && <p className="text-clay text-sm font-medium">{erreur}</p>}
