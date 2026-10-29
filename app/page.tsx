@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabase";
@@ -31,15 +31,195 @@ function useConfirmationLien(): boolean | null {
   return estConfirmation;
 }
 
-// --- Téléphone avec un vrai écran de l'application ---
-function Telephone({ src, alt, className = "", hauteur }: { src: string; alt: string; className?: string; hauteur?: string }) {
+// --- Compteur animé ---
+function useCompteur(cible: number, duree = 700) {
+  const [val, setVal] = useState(cible);
+  const ref = useRef(cible);
+  useEffect(() => {
+    const debut = ref.current;
+    if (debut === cible) return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      ref.current = cible;
+      setVal(cible);
+      return;
+    }
+    const t0 = performance.now();
+    let raf = 0;
+    const pas = (t: number) => {
+      const p = Math.min(1, (t - t0) / duree);
+      const v = Math.round(debut + (cible - debut) * (1 - Math.pow(1 - p, 3)));
+      ref.current = v;
+      setVal(v);
+      if (p < 1) raf = requestAnimationFrame(pas);
+    };
+    raf = requestAnimationFrame(pas);
+    return () => cancelAnimationFrame(raf);
+  }, [cible, duree]);
+  return val;
+}
+
+const fcfa = (n: number) => n.toLocaleString("fr-FR").replace(/\u202f|\u00a0/g, " ");
+
+// --- Démonstration animée : des ventes qui s'enregistrent en direct ---
+const PRODUITS_DEMO = [
+  { nom: "Patch Kinoki", prix: 3000, unite: "pièce", stock: 43 },
+  { nom: "Savon de Karité", prix: 1500, unite: "pièce", stock: 4 },
+  { nom: "Beurre de karité", prix: 2500, unite: "pot", stock: 0 },
+  { nom: "Huile de coco", prix: 2000, unite: "litre", stock: 18 },
+];
+// [produit, quantité vendue]
+const VENTES_DEMO: [number, number][] = [[0, 1], [3, 2], [1, 1], [0, 2], [3, 1]];
+
+function useDemoVentes() {
+  const [etape, setEtape] = useState(0); // 0 = état de départ
+  const [dernier, setDernier] = useState<number | null>(null);
+  const [toast, setToast] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const id = setInterval(() => {
+      setEtape((e) => {
+        const suivant = e >= VENTES_DEMO.length ? 0 : e + 1;
+        if (suivant === 0) {
+          setDernier(null);
+          setToast(null);
+        } else {
+          const [p, q] = VENTES_DEMO[suivant - 1];
+          setDernier(p);
+          setToast(`Vente enregistrée · +${fcfa(PRODUITS_DEMO[p].prix * q)} FCFA`);
+        }
+        return suivant;
+      });
+    }, 2600);
+    return () => clearInterval(id);
+  }, []);
+
+  useEffect(() => {
+    if (!toast) return;
+    const id = setTimeout(() => setToast(null), 1900);
+    return () => clearTimeout(id);
+  }, [toast]);
+
+  const stocks = PRODUITS_DEMO.map((p) => p.stock);
+  let ca = 45000;
+  let nb = 8;
+  for (let i = 0; i < etape; i++) {
+    const [p, q] = VENTES_DEMO[i];
+    stocks[p] -= q;
+    ca += PRODUITS_DEMO[p].prix * q;
+    nb += 1;
+  }
+  return { stocks, ca, nb, dernier, toast, etape };
+}
+
+// --- Téléphone (cadre) ---
+function Telephone({ children, className = "", hauteur = "430px" }: { children: React.ReactNode; className?: string; hauteur?: string }) {
   return (
     <div className={`relative mx-auto w-[220px] sm:w-[250px] rounded-[2.4rem] border-[7px] border-ink bg-ink shadow-2xl shadow-ink/30 overflow-hidden ${className}`}>
       <div className="absolute top-1.5 left-1/2 -translate-x-1/2 w-16 h-4 bg-ink rounded-full z-10" />
-      <div className="overflow-hidden rounded-[1.9rem]" style={hauteur ? { height: hauteur } : undefined}>
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src={src} alt={alt} className="w-full block" loading="lazy" />
+      <div className="overflow-hidden rounded-[1.9rem] bg-bone relative" style={{ height: hauteur }}>
+        {children}
       </div>
+    </div>
+  );
+}
+
+function EcranTableau({ d }: { d: ReturnType<typeof useDemoVentes> }) {
+  const ca = useCompteur(d.ca);
+  const faibles = 1 + d.stocks.filter((q) => q > 0 && q <= 5).length;
+  const ruptures = d.stocks.filter((q) => q === 0).length;
+  return (
+    <div className="px-3 pt-6 text-ink">
+      <p className="text-[9px] text-ink/50">Diako Sugu</p>
+      <p className="font-display font-bold text-[15px] text-indigo-deep leading-tight">Bonjour Adama 👋</p>
+      <div className="mt-3 rounded-2xl bg-indigo-deep text-bone p-3">
+        <p className="text-[9px] text-bone/70">Ventes aujourd&apos;hui</p>
+        <p className="font-display font-bold text-[24px] leading-tight">{fcfa(ca)} FCFA</p>
+        <span className="inline-block mt-1 text-[9px] bg-white/15 rounded-full px-2 py-0.5">🛒 {d.nb} ventes aujourd&apos;hui</span>
+      </div>
+      <div className="grid grid-cols-3 gap-1.5 mt-2">
+        <div className="bg-white rounded-xl p-2 border border-ink/10">
+          <p className="text-[13px]">📦</p><p className="font-display font-bold text-[15px] text-indigo-deep">12</p><p className="text-[8px] text-ink/50">Produits</p>
+        </div>
+        <div className="bg-bronze/10 rounded-xl p-2 border border-bronze/30">
+          <p className="text-[13px]">⚠️</p><p className="font-display font-bold text-[15px] text-bronze transition-all">{faibles}</p><p className="text-[8px] text-ink/50">Stock faible</p>
+        </div>
+        <div className="bg-clay/10 rounded-xl p-2 border border-clay/30">
+          <p className="text-[13px]">🚫</p><p className="font-display font-bold text-[15px] text-clay">{ruptures}</p><p className="text-[8px] text-ink/50">Ruptures</p>
+        </div>
+      </div>
+      <div className="mt-2 rounded-xl bg-bronze/10 border border-bronze/30 px-2 py-1.5 flex justify-between text-[9px]">
+        <span>🔔 <b>{faibles + ruptures} produits</b> à réapprovisionner</span>
+        <span className="text-bronze font-semibold">Voir →</span>
+      </div>
+      <div className="mt-2 rounded-xl bg-white border border-ink/10 p-2">
+        <div className="flex justify-between items-end">
+          <div><p className="text-[8px] text-ink/50">Mon plan</p><p className="font-display font-bold text-[12px] text-indigo-deep">Standard</p></div>
+          <span className="text-[9px] text-bronze font-semibold">Améliorer →</span>
+        </div>
+        <div className="h-1.5 rounded-full bg-ink/10 mt-1.5"><div className="h-full w-[12%] rounded-full bg-indigo-deep" /></div>
+        <p className="text-[8px] text-ink/50 mt-1">12 produits sur 100 utilisés</p>
+      </div>
+      <div className="absolute left-3 right-3 bottom-4">
+        <div
+          className={`mb-2 rounded-xl bg-green-600 text-white text-[10px] font-semibold px-2.5 py-2 shadow-lg transition-all duration-500 ${
+            d.toast ? "opacity-100 translate-y-0" : "opacity-0 translate-y-3"
+          }`}
+        >
+          ✓ {d.toast ?? "Vente enregistrée"}
+        </div>
+        <div className="rounded-xl bg-bronze text-white text-center font-display font-semibold text-[11px] py-2.5">+ Nouvelle vente</div>
+      </div>
+    </div>
+  );
+}
+
+function EcranProduits({ d }: { d: ReturnType<typeof useDemoVentes> }) {
+  return (
+    <div className="px-3 pt-6 text-ink">
+      <div className="flex justify-between items-start">
+        <div><p className="font-display font-bold text-[16px] text-indigo-deep leading-tight">Mes produits</p><p className="text-[9px] text-ink/50">12 produits en stock</p></div>
+        <span className="bg-bronze text-white text-[9px] font-semibold rounded-lg px-2 py-1">+ Ajouter</span>
+      </div>
+      <div className="mt-2 rounded-xl bg-white border border-ink/10 p-2">
+        <div className="flex justify-between text-[9px]"><span>Plan <b className="text-indigo-deep">Standard</b></span><span className="font-semibold">12 / 100 produits</span></div>
+        <div className="h-1.5 rounded-full bg-ink/10 mt-1"><div className="h-full w-[12%] rounded-full bg-indigo-deep" /></div>
+      </div>
+      <div className="mt-2 rounded-xl bg-white border border-ink/10 px-2 py-1.5 text-[9px] text-ink/40">🔍 Rechercher un produit...</div>
+      <div className="mt-2 space-y-1.5">
+        {PRODUITS_DEMO.map((p, i) => {
+          const q = d.stocks[i];
+          const etat = q === 0 ? "rupture" : q <= 5 ? "faible" : "ok";
+          return (
+            <div
+              key={p.nom}
+              className={`rounded-xl border px-2 py-1.5 flex items-center gap-2 transition-all duration-500 ${
+                etat === "rupture" ? "bg-clay/10 border-clay/30" : etat === "faible" ? "bg-bronze/10 border-bronze/30" : "bg-white border-ink/10"
+              } ${d.dernier === i ? "ring-2 ring-green-500 scale-[1.03]" : ""}`}
+            >
+              <span className="w-6 h-6 rounded-lg bg-indigo-deep/10 flex items-center justify-center text-[11px]">📦</span>
+              <div className="flex-1 min-w-0">
+                <p className="font-display font-semibold text-[10px] truncate">{p.nom}</p>
+                <p className="text-[8px] text-ink/50">{fcfa(p.prix)} FCFA · {p.unite}</p>
+              </div>
+              <div className="text-right">
+                <p className={`font-display font-bold text-[13px] leading-none ${etat === "rupture" ? "text-clay" : etat === "faible" ? "text-bronze" : "text-indigo-deep"}`}>{q}</p>
+                <p className="text-[7px] text-ink/50">{etat === "rupture" ? "Rupture" : etat === "faible" ? "Stock faible" : "en stock"}</p>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
+function DeuxTelephones() {
+  const d = useDemoVentes();
+  return (
+    <div className="flex justify-center items-end gap-3 md:pb-0">
+      <Telephone className="md:-rotate-2 animate-flotte"><EcranTableau d={d} /></Telephone>
+      <Telephone className="hidden sm:block mt-10 md:rotate-2 animate-flotte2"><EcranProduits d={d} /></Telephone>
     </div>
   );
 }
@@ -75,10 +255,7 @@ function PageAccueil() {
               </Link>
             </div>
           </div>
-          <div className="flex justify-center items-end gap-3 md:pb-0">
-            <Telephone src="/ecrans/tableau-de-bord.webp" alt="Tableau de bord Diako Stock" hauteur="430px" className="md:-rotate-2" />
-            <Telephone src="/ecrans/produits.webp" alt="Liste des produits Diako Stock" hauteur="430px" className="hidden sm:block mt-10 md:rotate-2" />
-          </div>
+          <DeuxTelephones />
         </div>
       </section>
 
