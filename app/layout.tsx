@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Space_Grotesk, Inter } from "next/font/google";
 import "./globals.css";
+import Suivi from "./Suivi";
 
 const display = Space_Grotesk({
   subsets: ["latin"],
@@ -27,6 +28,7 @@ export default function RootLayout({
     <html lang="fr">
       <body className={`${display.variable} ${body.variable} font-body min-h-screen`}>
         {children}
+        <Suivi />
       </body>
     </html>
   );
