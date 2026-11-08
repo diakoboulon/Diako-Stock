@@ -29,7 +29,7 @@ export default function ConnexionPage() {
       else setErreur("Connexion impossible : " + error.message);
       return;
     }
-    router.push("/tableau-de-bord");
+    router.push("/modules");
   }
 
   return (

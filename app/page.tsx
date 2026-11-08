@@ -21,7 +21,7 @@ function useConfirmationLien(): boolean | null {
       supabase.auth
         .verifyOtp({ token_hash: tokenHash, type: type as any })
         .then(({ error }) => {
-          router.replace(error ? "/connexion" : "/tableau-de-bord");
+          router.replace(error ? "/connexion" : "/modules");
         });
     } else {
       setEstConfirmation(false);

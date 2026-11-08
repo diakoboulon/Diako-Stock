@@ -73,7 +73,7 @@ export default function InscriptionPage() {
       setErreur(erreurCommerce.message);
       return;
     }
-    router.push("/tableau-de-bord");
+    router.push("/modules");
   }
 
   return (
