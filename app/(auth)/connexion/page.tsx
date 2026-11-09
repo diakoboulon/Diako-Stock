@@ -29,7 +29,10 @@ export default function ConnexionPage() {
       else setErreur("Connexion impossible : " + error.message);
       return;
     }
-    router.push("/tableau-de-bord");
+    // L'administrateur de la plateforme arrive sur son tableau de bord ;
+    // les clients arrivent directement dans leur module, comme avant.
+    const { data: estAdmin } = await supabase.rpc("est_admin_plateforme");
+    router.push(estAdmin === true ? "/admin" : "/tableau-de-bord");
   }
 
   return (
