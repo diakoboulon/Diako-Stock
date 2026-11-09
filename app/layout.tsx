@@ -15,8 +15,8 @@ const body = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "Diako Stock",
-  description: "Gérez votre stock. Développez votre commerce.",
+  title: "Diako Business",
+  description: "Des outils de gestion pour chaque métier. Diako Stock est disponible dès maintenant.",
 };
 
 export default function RootLayout({

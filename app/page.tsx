@@ -224,58 +224,160 @@ function DeuxTelephones() {
   );
 }
 
-const WHATSAPP = `https://wa.me/${WHATSAPP_ABONNEMENT}?text=${encodeURIComponent("Bonjour, j'ai une question sur Diako Stock.")}`;
+
+// --- Les modules de Diako Business ---
+type ModuleInfo = {
+  code: string;
+  nom: string;
+  icone: string;
+  description: string;
+  disponible: boolean;
+};
+
+const MODULES: ModuleInfo[] = [
+  { code: "stock", nom: "Diako Stock", icone: "📦", description: "Produits, stock, ventes, clients à crédit et rapports.", disponible: true },
+  { code: "facture", nom: "Diako Facture", icone: "🧾", description: "Factures et devis.", disponible: false },
+  { code: "commande", nom: "Diako Commande", icone: "🛍️", description: "Commandes de vos clients.", disponible: false },
+  { code: "garage", nom: "Diako Garage", icone: "🔧", description: "Garages et ateliers.", disponible: false },
+  { code: "restaurant", nom: "Diako Restaurant", icone: "🍽️", description: "Restaurants et maquis.", disponible: false },
+  { code: "pharmacie", nom: "Diako Pharmacie", icone: "💊", description: "Pharmacies.", disponible: false },
+  { code: "sante", nom: "Diako Santé", icone: "🩺", description: "Cliniques et cabinets.", disponible: false },
+  { code: "sav", nom: "Diako SAV Pro", icone: "📞", description: "Service après-vente.", disponible: false },
+  { code: "distribution", nom: "Diako Distribution", icone: "🚚", description: "Grossistes et livraisons.", disponible: false },
+  { code: "chantier", nom: "Diako Chantier", icone: "🏗️", description: "Chantiers et bâtiment.", disponible: false },
+];
+
+const lienWhatsApp = (message: string) =>
+  `https://wa.me/${WHATSAPP_ABONNEMENT}?text=${encodeURIComponent(message)}`;
+
+const WHATSAPP = lienWhatsApp("Bonjour, j'ai une question sur Diako Business.");
+
+function MosaiqueModules() {
+  const codes = ["stock", "facture", "commande", "restaurant", "garage", "pharmacie"];
+  const tuiles = MODULES.filter((m) => codes.includes(m.code));
+  return (
+    <div className="grid grid-cols-2 gap-3 max-w-xs mx-auto md:max-w-sm pb-10 md:pb-0">
+      {tuiles.map((m, i) => (
+        <div
+          key={m.code}
+          className={`rounded-3xl border border-white/15 bg-white/10 p-4 ${i % 2 === 0 ? "animate-flotte" : "animate-flotte2 mt-6"}`}
+        >
+          <span className="text-3xl">{m.icone}</span>
+          <p className="font-display font-semibold mt-2 text-sm">{m.nom}</p>
+          <p className={`text-[11px] mt-0.5 ${m.disponible ? "text-bronze-light font-semibold" : "text-bone/60"}`}>
+            {m.disponible ? "Disponible" : "Bientôt"}
+          </p>
+        </div>
+      ))}
+    </div>
+  );
+}
 
 function PageAccueil() {
   return (
     <main className="min-h-screen bg-bone overflow-x-hidden">
       {/* HERO */}
-      <section className="bg-gradient-to-br from-indigo-deep to-ink text-bone px-6 pt-10 md:pt-16 relative overflow-hidden">
+      <section className="bg-gradient-to-br from-indigo-deep to-ink text-bone px-6 pt-6 md:pt-8 relative overflow-hidden">
         <div className="absolute -top-24 -right-24 w-72 h-72 rounded-full bg-bronze/20 blur-3xl" />
-        <div className="max-w-5xl mx-auto md:grid md:grid-cols-2 md:gap-10 md:items-center relative">
-          <div className="text-center md:text-left pb-8 md:pb-16">
-            <p className="font-display text-sm tracking-[0.2em] text-bronze-light font-semibold mb-4">DIAKO STOCK</p>
-            <h1 className="font-display text-[34px] md:text-5xl font-bold leading-[1.1] mb-4">
-              Votre stock sous contrôle.<br />
-              <span className="text-bronze-light">Vos ventes en un coup d&apos;œil.</span>
-            </h1>
-            <p className="text-bone/80 text-base md:text-lg max-w-md mx-auto md:mx-0">
-              Suivez votre stock, vos ventes et vos bénéfices depuis votre téléphone, aussi simplement que de tenir votre cahier.
-            </p>
-            <div className="mt-7 max-w-sm mx-auto md:mx-0">
-              <Link
-                href="/inscription"
-                className="block text-center bg-bronze text-white font-display font-semibold text-[17px] rounded-2xl py-4 shadow-lg shadow-bronze/30 active:scale-[0.98] transition-transform"
-              >
-                Créer mon commerce gratuitement
-              </Link>
-              <p className="text-[13px] text-bone/70 mt-2 text-center md:text-left">Gratuit jusqu&apos;à 5 produits · Sans carte bancaire</p>
-              <Link href="/connexion" className="inline-block mt-3 text-bone/80 font-medium underline underline-offset-4">
-                J&apos;ai déjà un compte
-              </Link>
+        <div className="max-w-5xl mx-auto relative">
+          <nav className="flex items-center justify-between">
+            <span className="font-display text-lg font-bold tracking-wide">
+              DIAKO <span className="text-bronze-light">BUSINESS</span>
+            </span>
+            <Link href="/connexion" className="text-sm font-medium border border-bone/30 rounded-full px-4 py-2">
+              Se connecter
+            </Link>
+          </nav>
+
+          <div className="md:grid md:grid-cols-2 md:gap-10 md:items-center pt-10 md:pt-14">
+            <div className="text-center md:text-left pb-10 md:pb-16">
+              <h1 className="font-display text-[34px] md:text-5xl font-bold leading-[1.1] mb-4">
+                Gérez votre entreprise.<br />
+                <span className="text-bronze-light">Un module pour chaque métier.</span>
+              </h1>
+              <p className="text-bone/80 text-base md:text-lg max-w-md mx-auto md:mx-0">
+                Une plateforme de gestion pensée pour les entreprises d&apos;Afrique, depuis votre téléphone.
+                Diako Stock est disponible dès maintenant, les autres modules arrivent bientôt.
+              </p>
+              <div className="mt-7 max-w-sm mx-auto md:mx-0">
+                <a
+                  href="#modules"
+                  className="block text-center bg-bronze text-white font-display font-semibold text-[17px] rounded-2xl py-4 shadow-lg shadow-bronze/30 active:scale-[0.98] transition-transform"
+                >
+                  Choisir mon module
+                </a>
+                <Link href="/connexion" className="inline-block mt-3 text-bone/80 font-medium underline underline-offset-4">
+                  J&apos;ai déjà un compte
+                </Link>
+              </div>
             </div>
+            <MosaiqueModules />
           </div>
-          <DeuxTelephones />
         </div>
       </section>
 
       {/* PREUVES */}
       <section className="bg-white border-b border-ink/10">
         <div className="max-w-5xl mx-auto px-5 py-5 grid grid-cols-2 md:grid-cols-4 gap-3 text-center text-sm font-medium text-indigo-deep">
-          {["📱 Sur téléphone", "🇫🇷 En français", "💬 Reçus WhatsApp", "🇲🇱 Fait au Mali"].map((t) => (
+          {["📱 Sur téléphone", "🇫🇷 En français", "🔒 Données séparées par entreprise", "🇲🇱 Fait au Mali"].map((t) => (
             <span key={t}>{t}</span>
           ))}
         </div>
       </section>
 
       <section className="px-5 max-w-5xl mx-auto">
+        {/* MODULES */}
+        <h2 id="modules" className="scroll-mt-6 font-display text-2xl md:text-3xl font-bold text-indigo-deep text-center mt-14 mb-2">
+          Choisissez votre module
+        </h2>
+        <p className="text-center text-ink/60 mb-7">Un module par métier. Touchez celui qui vous correspond.</p>
+
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+          {MODULES.map((m) =>
+            m.disponible ? (
+              <Link
+                key={m.code}
+                href="/inscription"
+                className="col-span-2 md:col-span-3 bg-white border-2 border-bronze rounded-3xl p-5 flex flex-col sm:flex-row sm:items-center gap-4 shadow-lg shadow-bronze/10 active:scale-[0.99] transition-transform"
+              >
+                <span className="flex-none w-14 h-14 rounded-2xl bg-bone flex items-center justify-center text-3xl">{m.icone}</span>
+                <div className="flex-1">
+                  <div className="flex items-center gap-2">
+                    <h3 className="font-display font-bold text-lg text-indigo-deep">{m.nom}</h3>
+                    <span className="text-[11px] font-semibold rounded-full bg-green-600/10 text-green-700 px-2.5 py-0.5">Disponible</span>
+                  </div>
+                  <p className="text-sm text-ink/60 mt-0.5">{m.description}</p>
+                  <p className="text-xs text-ink/50 mt-1">Gratuit jusqu&apos;à 5 produits · Sans carte bancaire</p>
+                </div>
+                <span className="flex-none bg-bronze text-white font-display font-semibold rounded-xl px-5 py-3 text-center">
+                  Commencer gratuitement →
+                </span>
+              </Link>
+            ) : (
+              <a
+                key={m.code}
+                href={lienWhatsApp(`Bonjour, je suis intéressé par ${m.nom}. Prévenez-moi dès qu'il est disponible.`)}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="bg-white border border-ink/10 rounded-3xl p-4 active:scale-[0.98] transition-transform"
+              >
+                <span className="text-3xl">{m.icone}</span>
+                <h3 className="font-display font-semibold text-indigo-deep mt-2 leading-tight">{m.nom}</h3>
+                <p className="text-xs text-ink/60 mt-1">{m.description}</p>
+                <p className="text-[11px] font-semibold text-bronze mt-3">Bientôt</p>
+                <p className="text-xs text-indigo-deep underline underline-offset-2 mt-0.5">Me prévenir sur WhatsApp</p>
+              </a>
+            )
+          )}
+        </div>
+
         {/* COMMENT ÇA MARCHE */}
         <h2 className="font-display text-2xl md:text-3xl font-bold text-indigo-deep text-center mt-14 mb-7">Prêt en 3 étapes</h2>
         <div className="grid md:grid-cols-3 gap-4">
           {[
-            ["Ajoutez vos produits", "Nom, prix et quantité en stock."],
-            ["Enregistrez vos ventes", "Le stock baisse tout seul à chaque vente."],
-            ["Suivez vos bénéfices", "Vos chiffres, en clair, chaque jour."],
+            ["Choisissez votre module", "Celui qui correspond à votre métier."],
+            ["Créez votre compte", "En moins de 2 minutes, sans carte bancaire."],
+            ["Travaillez depuis votre téléphone", "Vos données restent séparées de celles des autres entreprises."],
           ].map(([t, d], i) => (
             <div key={t} className="bg-white border border-ink/10 rounded-3xl p-5 flex md:block gap-4 items-start">
               <span className="flex-none w-10 h-10 rounded-full bg-indigo-deep text-bone font-display font-bold flex items-center justify-center md:mb-3">{i + 1}</span>
@@ -286,60 +388,68 @@ function PageAccueil() {
             </div>
           ))}
         </div>
+      </section>
 
-        {/* FONCTIONS */}
-        <h2 className="font-display text-2xl md:text-3xl font-bold text-indigo-deep text-center mt-14 mb-7">Tout pour votre boutique</h2>
-        <div className="grid md:grid-cols-2 gap-3">
-          {[
-            ["📦", "bg-indigo-deep/10", "Le stock se met à jour tout seul", "Chaque vente diminue le stock, chaque achat l'augmente, sans calcul à refaire."],
-            ["⚠️", "bg-bronze/15", "Alertes avant la rupture", "Diako Stock vous prévient dès qu'un article se fait rare."],
-            ["📊", "bg-green-600/10", "Vos chiffres, en clair", "Ventes, bénéfices et produits qui marchent le mieux, d'un coup d'œil."],
-            ["💬", "bg-green-500/10", "Reçus sur WhatsApp", "Envoyez le reçu à votre client en un geste."],
-          ].map(([ic, bg, t, d]) => (
-            <div key={t} className="bg-white border border-ink/10 rounded-3xl p-5 flex gap-4">
-              <span className={`flex-none w-12 h-12 rounded-2xl flex items-center justify-center text-2xl ${bg}`}>{ic}</span>
-              <div>
-                <h3 className="font-display font-semibold text-indigo-deep">{t}</h3>
-                <p className="text-sm text-ink/60 mt-0.5">{d}</p>
-              </div>
+      {/* DIAKO STOCK EN DÉTAIL */}
+      <section id="diako-stock" className="bg-white border-y border-ink/10 mt-14 scroll-mt-6">
+        <div className="max-w-5xl mx-auto px-5 py-12 md:grid md:grid-cols-2 md:gap-10 md:items-center">
+          <div>
+            <p className="font-display text-sm tracking-[0.2em] text-bronze font-semibold mb-2">DIAKO STOCK</p>
+            <h2 className="font-display text-2xl md:text-3xl font-bold text-indigo-deep leading-tight">
+              Votre stock sous contrôle. Vos ventes en un coup d&apos;œil.
+            </h2>
+            <p className="text-ink/60 mt-3">
+              Suivez votre stock, vos ventes et vos bénéfices depuis votre téléphone, aussi simplement que de tenir votre cahier.
+            </p>
+
+            <div className="mt-6 space-y-3">
+              {[
+                ["📦", "bg-indigo-deep/10", "Le stock se met à jour tout seul", "Chaque vente diminue le stock, chaque achat l'augmente."],
+                ["⚠️", "bg-bronze/15", "Alertes avant la rupture", "Vous êtes prévenu dès qu'un article se fait rare."],
+                ["📊", "bg-green-600/10", "Vos chiffres, en clair", "Ventes, bénéfices et produits qui marchent le mieux."],
+                ["💬", "bg-green-500/10", "Reçus sur WhatsApp", "Envoyez le reçu à votre client en un geste."],
+              ].map(([ic, bg, t, d]) => (
+                <div key={t} className="flex gap-3">
+                  <span className={`flex-none w-11 h-11 rounded-2xl flex items-center justify-center text-xl ${bg}`}>{ic}</span>
+                  <div>
+                    <h3 className="font-display font-semibold text-indigo-deep">{t}</h3>
+                    <p className="text-sm text-ink/60">{d}</p>
+                  </div>
+                </div>
+              ))}
             </div>
-          ))}
-        </div>
 
-        {/* TARIFS */}
-        <h2 className="font-display text-2xl md:text-3xl font-bold text-indigo-deep text-center mt-14 mb-2">Commencez gratuitement</h2>
-        <p className="text-center text-ink/60 mb-7">Passez au plan supérieur quand votre commerce grandit.</p>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-          {[
-            ["Gratuit", "0", "5 produits", false],
-            ["Standard", "5 000", "100 produits", true],
-            ["Pro", "7 500", "500 produits", false],
-            ["Business", "15 000", "Produits illimités", false],
-          ].map(([n, p, l, hot]) => (
-            <div key={n as string} className={`rounded-3xl p-4 text-center border-2 ${hot ? "bg-indigo-deep text-bone border-bronze shadow-xl" : "bg-white border-ink/10"}`}>
-              <p className={`font-display font-semibold ${hot ? "text-bronze-light" : "text-indigo-deep"}`}>{n}</p>
-              <p className="font-display text-2xl font-bold mt-1">{p}</p>
-              <p className={`text-xs ${hot ? "text-bone/70" : "text-ink/50"}`}>FCFA{p !== "0" ? " / mois" : ""}</p>
-              <p className={`text-sm mt-2 font-medium ${hot ? "text-bone" : "text-ink/70"}`}>{l}</p>
+            <div className="mt-7 max-w-sm">
+              <Link
+                href="/inscription"
+                className="block text-center bg-bronze text-white font-display font-semibold text-[17px] rounded-2xl py-4 shadow-lg shadow-bronze/30"
+              >
+                Créer mon commerce gratuitement
+              </Link>
+              <p className="text-[13px] text-ink/50 mt-2">Gratuit jusqu&apos;à 5 produits · Sans carte bancaire</p>
+              <Link href="/tarifs" className="inline-block mt-2 text-bronze font-semibold">Voir les tarifs →</Link>
             </div>
-          ))}
-        </div>
-        <div className="text-center mt-5">
-          <Link href="/tarifs" className="text-bronze font-semibold">Voir tous les tarifs →</Link>
-        </div>
+          </div>
 
+          <div className="mt-10 md:mt-0 bg-gradient-to-br from-indigo-deep to-ink rounded-[32px] pt-10 px-4 overflow-hidden">
+            <DeuxTelephones />
+          </div>
+        </div>
+      </section>
+
+      <section className="px-5 max-w-5xl mx-auto">
         {/* APPEL FINAL */}
         <div className="bg-gradient-to-br from-indigo-deep to-ink text-bone rounded-[28px] p-8 text-center mt-12 mb-6 max-w-2xl mx-auto">
-          <h2 className="font-display text-2xl font-bold mb-2">Prêt à garder votre stock sous contrôle ?</h2>
-          <p className="text-bone/80 mb-5">Créez votre commerce en moins de 2 minutes.</p>
-          <Link href="/inscription" className="block max-w-xs mx-auto bg-bronze text-white font-display font-semibold text-[17px] rounded-2xl py-4">
-            Créer mon commerce
-          </Link>
+          <h2 className="font-display text-2xl font-bold mb-2">Prêt à faire avancer votre entreprise ?</h2>
+          <p className="text-bone/80 mb-5">Commencez dès aujourd&apos;hui avec Diako Stock, et retrouvez bientôt les autres modules.</p>
+          <a href="#modules" className="block max-w-xs mx-auto bg-bronze text-white font-display font-semibold text-[17px] rounded-2xl py-4">
+            Choisir mon module
+          </a>
           <a href={WHATSAPP} target="_blank" rel="noopener noreferrer" className="inline-block mt-4 text-bone/80 underline underline-offset-4 text-sm">
             Une question ? Écrivez-nous sur WhatsApp
           </a>
         </div>
-        <p className="text-center text-xs text-ink/50 pb-24">Diako Stock · Fait au Mali 🇲🇱</p>
+        <p className="text-center text-xs text-ink/50 pb-24">Diako Business · Fait au Mali 🇲🇱</p>
       </section>
 
       {/* BOUTON WHATSAPP */}
