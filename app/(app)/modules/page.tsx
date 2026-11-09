@@ -4,33 +4,26 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabase";
 import { commerceActuel } from "@/lib/business";
-import { WHATSAPP_ABONNEMENT } from "@/lib/plans";
 
 type Module = {
   code: string;
   nom: string;
   icone: string;
   description: string;
-  href: string | null; // null = pas encore disponible
+  href: string;
 };
 
-// Seul Diako Stock est ouvert pour l'instant. Les autres modules arriveront un par un.
+// Modules du client. Les autres modules n'apparaissent jamais ici :
+// ils seront ajoutés seulement quand le client s'y est inscrit.
 const MODULES: Module[] = [
-  { code: "stock", nom: "Diako Stock", icone: "📦", description: "Produits, stock, ventes, clients à crédit et rapports.", href: "/tableau-de-bord" },
-  { code: "facture", nom: "Diako Facture", icone: "🧾", description: "Factures et devis.", href: null },
-  { code: "commande", nom: "Diako Commande", icone: "🛍️", description: "Commandes de vos clients.", href: null },
-  { code: "garage", nom: "Diako Garage", icone: "🔧", description: "Garages et ateliers.", href: null },
-  { code: "restaurant", nom: "Diako Restaurant", icone: "🍽️", description: "Restaurants et maquis.", href: null },
-  { code: "pharmacie", nom: "Diako Pharmacie", icone: "💊", description: "Pharmacies.", href: null },
-  { code: "sante", nom: "Diako Santé", icone: "🩺", description: "Cliniques et cabinets.", href: null },
-  { code: "sav", nom: "Diako SAV Pro", icone: "📞", description: "Service après-vente.", href: null },
-  { code: "distribution", nom: "Diako Distribution", icone: "🚚", description: "Grossistes et livraisons.", href: null },
-  { code: "chantier", nom: "Diako Chantier", icone: "🏗️", description: "Chantiers et bâtiment.", href: null },
+  {
+    code: "stock",
+    nom: "Diako Stock",
+    icone: "📦",
+    description: "Produits, stock, ventes, clients à crédit et rapports.",
+    href: "/tableau-de-bord",
+  },
 ];
-
-const LIEN_DEMANDE = `https://wa.me/${WHATSAPP_ABONNEMENT}?text=${encodeURIComponent(
-  "Bonjour, je suis intéressé par un module Diako Business : "
-)}`;
 
 export default function ModulesPage() {
   const router = useRouter();
@@ -43,6 +36,11 @@ export default function ModulesPage() {
       const c = await commerceActuel();
       if (!c) {
         router.push("/connexion");
+        return;
+      }
+      // Un seul module : on entre directement dedans, sans écran intermédiaire.
+      if (MODULES.length === 1) {
+        router.replace(MODULES[0].href);
         return;
       }
       setCommerce(c.nom ?? "");
@@ -68,9 +66,6 @@ export default function ModulesPage() {
     );
   }
 
-  const ouverts = MODULES.filter((m) => m.href);
-  const bientot = MODULES.filter((m) => !m.href);
-
   return (
     <main className="min-h-screen bg-bone px-5 py-8 max-w-md mx-auto pb-16">
       <header className="mb-6 flex items-start justify-between">
@@ -91,19 +86,12 @@ export default function ModulesPage() {
         </button>
       </header>
 
-      <section className="bg-indigo-deep rounded-3xl p-5 mb-6 text-bone">
-        <p className="font-display text-xl font-bold">Diako Business</p>
-        <p className="text-sm text-bone/70 mt-1">
-          Tous les outils de votre entreprise au même endroit, depuis votre téléphone.
-        </p>
-      </section>
-
       <h2 className="font-display font-bold text-indigo-deep mb-3">Mes modules</h2>
-      <div className="space-y-3 mb-8">
-        {ouverts.map((m) => (
+      <div className="space-y-3">
+        {MODULES.map((m) => (
           <a
             key={m.code}
-            href={m.href!}
+            href={m.href}
             className="flex items-center gap-4 bg-white border border-bronze/50 rounded-2xl p-4 shadow-sm"
           >
             <span className="flex-none w-12 h-12 rounded-xl bg-bone flex items-center justify-center text-2xl">
@@ -119,27 +107,6 @@ export default function ModulesPage() {
           </a>
         ))}
       </div>
-
-      <h2 className="font-display font-bold text-indigo-deep mb-3">Bientôt disponibles</h2>
-      <div className="grid grid-cols-2 gap-3 mb-6">
-        {bientot.map((m) => (
-          <div key={m.code} className="bg-white border border-ink/10 rounded-2xl p-4 opacity-80">
-            <span className="text-2xl">{m.icone}</span>
-            <p className="font-semibold text-ink mt-2 leading-tight">{m.nom}</p>
-            <p className="text-xs text-ink/50 mt-1">{m.description}</p>
-            <p className="text-xs font-medium text-bronze mt-2">Bientôt</p>
-          </div>
-        ))}
-      </div>
-
-      <a
-        href={LIEN_DEMANDE}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="block text-center border border-ink/15 text-ink/70 text-sm font-medium rounded-xl py-3"
-      >
-        Quel module vous intéresse ? Dites-le-nous sur WhatsApp
-      </a>
     </main>
   );
 }

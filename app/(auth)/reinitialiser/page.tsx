@@ -30,7 +30,7 @@ export default function ReinitialiserPage() {
     const { error } = await supabase.auth.updateUser({ password: mdp });
     setChargement(false);
     if (error) { setErreur("Impossible de changer le mot de passe : " + error.message); return; }
-    router.push("/modules");
+    router.push("/tableau-de-bord");
   }
 
   return (

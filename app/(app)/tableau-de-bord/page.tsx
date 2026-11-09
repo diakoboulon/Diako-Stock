@@ -134,7 +134,6 @@ export default function TableauDeBordPage() {
     <main className="min-h-screen bg-bone px-5 py-8 max-w-md mx-auto pb-28">
            <header className="mb-6 flex items-start justify-between">
         <div>
-          <a href="/modules" className="text-xs font-semibold text-bronze">← Diako Business</a>
           <p className="text-ink/50 text-sm">{resume.commerce}</p>
           <h1 className="font-display text-2xl font-bold text-indigo-deep">
             Bonjour {resume.prenom} 👋
