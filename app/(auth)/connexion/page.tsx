@@ -4,6 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabase";
+import { enFrancais } from "@/lib/messages";
 import ChampMotDePasse from "@/components/ChampMotDePasse";
 
 export default function ConnexionPage() {
@@ -24,9 +25,9 @@ export default function ConnexionPage() {
     setChargement(false);
     if (error) {
       const m = (error.message || "").toLowerCase();
-      if (m.includes("invalid login credentials")) setErreur("Email ou mot de passe incorrect.");
+      if (m.includes("invalid login credentials")) setErreur("E-mail ou mot de passe incorrect.");
       else if (m.includes("not confirmed")) setErreur("Votre e-mail n'est pas encore confirmé. Ouvrez le lien reçu par e-mail.");
-      else setErreur("Connexion impossible : " + error.message);
+      else setErreur("Connexion impossible : " + enFrancais(error.message));
       return;
     }
     // L'administrateur de la plateforme arrive sur son tableau de bord ;
@@ -46,7 +47,7 @@ export default function ConnexionPage() {
         <form onSubmit={seConnecter} className="bg-white rounded-3xl border border-ink/10 shadow-xl shadow-ink/5 p-5 space-y-4">
           <h1 className="font-display text-xl font-bold text-indigo-deep">Bon retour 👋</h1>
           <div>
-            <label className="block text-sm font-medium mb-1">Email</label>
+            <label className="block text-sm font-medium mb-1">Adresse e-mail</label>
             <input
               type="email"
               required

@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabase";
+import { enFrancais } from "@/lib/messages";
 
 const fcfaDate = (d: string | null) =>
   d ? new Date(d).toLocaleDateString("fr-FR", { day: "2-digit", month: "short", year: "numeric" }) : "—";
@@ -66,7 +67,7 @@ export default function AdminPage() {
     if (r.error || l.error) {
       setErreur(
         "Impossible de charger l'administration : " +
-          (r.error?.message || l.error?.message) +
+          enFrancais(r.error?.message || l.error?.message) +
           " (la migration 9 est-elle bien installée dans Supabase ?)"
       );
       return;
@@ -109,7 +110,7 @@ export default function AdminPage() {
     });
     setEnCours(null);
     if (error) {
-      window.alert("Impossible de modifier le statut : " + error.message);
+      window.alert("Impossible de modifier le statut : " + enFrancais(error.message));
       return;
     }
     await charger();

@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabase";
+import { enFrancais } from "@/lib/messages";
 import { commerceActuel } from "@/lib/business";
 
 type Produit = {
@@ -124,7 +125,7 @@ export default function NouvelleVentePage() {
 
     setEnvoi(false);
     if (error) {
-      setErreur(error.message);
+      setErreur(enFrancais(error.message));
       return;
     }
     setVenteReussie({ total, id: idVente as string });

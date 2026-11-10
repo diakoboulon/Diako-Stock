@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabase";
+import { enFrancais } from "@/lib/messages";
 import ChampMotDePasse from "@/components/ChampMotDePasse";
 
 export default function ReinitialiserPage() {
@@ -29,7 +30,7 @@ export default function ReinitialiserPage() {
     setChargement(true);
     const { error } = await supabase.auth.updateUser({ password: mdp });
     setChargement(false);
-    if (error) { setErreur("Impossible de changer le mot de passe : " + error.message); return; }
+    if (error) { setErreur("Impossible de changer le mot de passe : " + enFrancais(error.message)); return; }
     router.push("/tableau-de-bord");
   }
 

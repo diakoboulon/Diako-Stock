@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { supabase } from "@/lib/supabase";
+import { enFrancais } from "@/lib/messages";
 
 export default function MotDePasseOubliePage() {
   const [email, setEmail] = useState("");
@@ -19,7 +20,7 @@ export default function MotDePasseOubliePage() {
     });
     setChargement(false);
     if (error) {
-      setErreur("Impossible d'envoyer le lien pour le moment : " + error.message);
+      setErreur("Impossible d'envoyer le lien pour le moment : " + enFrancais(error.message));
       return;
     }
     setEnvoye(true);
@@ -43,7 +44,7 @@ export default function MotDePasseOubliePage() {
             <>
               <p className="text-sm text-ink/70">Entrez votre e-mail. Nous vous envoyons un lien pour choisir un nouveau mot de passe.</p>
               <div>
-                <label className="block text-sm font-medium mb-1">Email</label>
+                <label className="block text-sm font-medium mb-1">Adresse e-mail</label>
                 <input type="email" required className="input-field" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="vous@exemple.com" />
               </div>
               {erreur && <p className="text-clay text-sm font-medium">{erreur}</p>}

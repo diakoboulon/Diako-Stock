@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabase";
+import { enFrancais } from "@/lib/messages";
 import { commerceActuel } from "@/lib/business";
 import PlanRequis from "@/components/PlanRequis";
 
@@ -349,7 +350,7 @@ function FormulaireEncaisser({
       if (error) {
         setEnvoi(false);
         setErreur(
-          `${error.message} Une partie du paiement a peut-être été enregistrée : vérifiez le solde du client.`
+          `${enFrancais(error.message)} Une partie du paiement a peut-être été enregistrée : vérifiez le solde du client.`
         );
         await onRecharger();
         return;
@@ -446,7 +447,7 @@ function FormulaireClient({
 
     setEnvoi(false);
     if (error) {
-      setErreur(error.message);
+      setErreur(enFrancais(error.message));
       return;
     }
     onCree();

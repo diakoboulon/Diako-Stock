@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabase";
+import { enFrancais } from "@/lib/messages";
 import { commerceActuel } from "@/lib/business";
 import { infoAbonnement, InfoAbonnement } from "@/lib/plans";
 
@@ -297,7 +298,7 @@ function FormulaireProduit({
       setErreur(
         message.includes("LIMITE_PLAN")
           ? message.replace("LIMITE_PLAN: ", "")
-          : message
+          : enFrancais(message)
       );
       setEnvoi(false);
     }

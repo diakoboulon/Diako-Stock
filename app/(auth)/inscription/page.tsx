@@ -4,6 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabase";
+import { enFrancais } from "@/lib/messages";
 import ChampMotDePasse from "@/components/ChampMotDePasse";
 
 export default function InscriptionPage() {
@@ -36,7 +37,7 @@ export default function InscriptionPage() {
     });
     if (erreurAuth || !data.user) {
       setChargement(false);
-      setErreur(erreurAuth?.message ?? "Impossible de créer le compte.");
+      setErreur(enFrancais(erreurAuth?.message, "Impossible de créer le compte."));
       return;
     }
 
@@ -70,7 +71,7 @@ export default function InscriptionPage() {
 
     setChargement(false);
     if (erreurCommerce) {
-      setErreur(erreurCommerce.message);
+      setErreur(enFrancais(erreurCommerce.message));
       return;
     }
     router.push("/tableau-de-bord");
@@ -113,7 +114,7 @@ export default function InscriptionPage() {
           <input
             required
             type="email"
-            placeholder="Email"
+            placeholder="Adresse e-mail"
             className="input-field"
             value={form.email}
             onChange={(e) => majChamp("email", e.target.value)}
