@@ -293,11 +293,11 @@ const BOUTON_SECONDAIRE =
 
 function Logo() {
   return (
-    <span className="flex items-center gap-2.5">
-      <span className="w-9 h-9 rounded-xl bg-[#14284B] text-[#E4B85C] font-display font-bold text-lg flex items-center justify-center">
+    <span className="flex items-center gap-2 sm:gap-2.5">
+      <span className="flex-none w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-[#14284B] text-[#E4B85C] font-display font-bold text-base sm:text-lg flex items-center justify-center">
         D
       </span>
-      <span className="font-display text-[17px] font-bold tracking-wide text-[#14284B]">
+      <span className="font-display text-[14px] sm:text-[17px] font-bold tracking-normal sm:tracking-wide text-[#14284B] whitespace-nowrap">
         DIAKO <span className="text-[#9A7424]">BUSINESS</span>
       </span>
     </span>
@@ -306,11 +306,11 @@ function Logo() {
 
 function Etat({ disponible }: { disponible: boolean }) {
   return disponible ? (
-    <span className="inline-flex items-center gap-1.5 text-[11px] font-semibold rounded-full bg-[#2E8B57]/10 text-[#1F6B40] px-2.5 py-1">
+    <span className="inline-flex items-center gap-1.5 whitespace-nowrap text-[11px] font-semibold rounded-full bg-[#2E8B57]/10 text-[#1F6B40] px-2.5 py-1">
       <span className="w-1.5 h-1.5 rounded-full bg-[#2E8B57]" /> Disponible
     </span>
   ) : (
-    <span className="inline-flex items-center text-[11px] font-semibold rounded-full bg-[#C9A24B]/15 text-[#7A5A12] px-2.5 py-1">
+    <span className="inline-flex items-center whitespace-nowrap text-[11px] font-semibold rounded-full bg-[#C9A24B]/15 text-[#7A5A12] px-2.5 py-1">
       Bientôt disponible
     </span>
   );
@@ -323,6 +323,38 @@ const LIENS_MENU: [string, string][] = [
   ["Essai gratuit", "#essai"],
 ];
 
+function BoutonWhatsApp() {
+  // Il reste caché pendant la lecture (défilement vers le bas) et apparaît quand on remonte ou en bas de page.
+  const [visible, setVisible] = useState(false);
+  const dernierY = useRef(0);
+
+  useEffect(() => {
+    function surDefilement() {
+      const y = window.scrollY;
+      const enBas = y + window.innerHeight >= document.documentElement.scrollHeight - 120;
+      if (y < 400) setVisible(false);
+      else if (enBas || y < dernierY.current - 8) setVisible(true);
+      else if (y > dernierY.current + 8) setVisible(false);
+      dernierY.current = y;
+    }
+    window.addEventListener("scroll", surDefilement, { passive: true });
+    return () => window.removeEventListener("scroll", surDefilement);
+  }, []);
+
+  return (
+    <a
+      href={WHATSAPP}
+      target="_blank"
+      rel="noopener noreferrer"
+      aria-label="Nous écrire sur WhatsApp"
+      style={{ bottom: "calc(env(safe-area-inset-bottom, 0px) + 12px)" }}
+      className={`fixed right-3 z-40 w-11 h-11 rounded-full bg-[#25D366] text-white flex items-center justify-center shadow-lg shadow-black/20 transition-all duration-300 ${visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4 pointer-events-none"}`}
+    >
+      <Icone nom="message" taille={22} />
+    </a>
+  );
+}
+
 function PageAccueil() {
   const autres = MODULES.filter((m) => !m.disponible);
   const stock = MODULES[0];
@@ -331,23 +363,23 @@ function PageAccueil() {
     <main className="min-h-screen bg-[#FAF8F3] text-[#3A3F47] overflow-x-hidden">
       {/* EN-TÊTE */}
       <header>
-        <div className="max-w-6xl mx-auto px-5 py-5 flex items-center justify-between gap-4">
-          <Link href="/" aria-label="DIAKO BUSINESS, accueil">
+        <div className="max-w-6xl mx-auto px-4 sm:px-5 py-3.5 flex items-center justify-between gap-3">
+          <Link href="/" aria-label="DIAKO BUSINESS, accueil" className="py-1">
             <Logo />
           </Link>
           <nav className="hidden md:flex items-center gap-7 text-sm font-medium" aria-label="Navigation principale">
             {LIENS_MENU.map(([libelle, lien]) => (
-              <a key={lien} href={lien} className="hover:text-[#14284B] transition-colors">
+              <a key={lien} href={lien} className="py-2 hover:text-[#14284B] transition-colors">
                 {libelle}
               </a>
             ))}
-            <Link href="/tarifs" className="hover:text-[#14284B] transition-colors">
+            <Link href="/tarifs" className="py-2 hover:text-[#14284B] transition-colors">
               Tarifs
             </Link>
           </nav>
           <Link
             href="/connexion"
-            className="inline-flex items-center border-2 border-[#14284B]/20 text-[#14284B] font-semibold text-sm rounded-full px-5 py-2.5 hover:border-[#14284B]/45 transition-colors"
+            className="inline-flex flex-none items-center border-2 border-[#14284B]/20 text-[#14284B] font-semibold text-[12.5px] sm:text-sm rounded-full px-3 sm:px-5 py-2.5 whitespace-nowrap hover:border-[#14284B]/45 transition-colors"
           >
             Se connecter
           </Link>
@@ -355,21 +387,21 @@ function PageAccueil() {
       </header>
 
       {/* PREMIÈRE SECTION */}
-      <section className="relative">
+      <section className="relative overflow-hidden">
         <div className="absolute -top-10 right-0 w-[420px] h-[420px] rounded-full bg-[#C9A24B]/15 blur-3xl pointer-events-none" />
-        <div className="max-w-6xl mx-auto px-5 pt-6 pb-14 md:pt-12 md:pb-20 relative lg:grid lg:grid-cols-2 lg:gap-12 lg:items-center">
+        <div className="max-w-6xl mx-auto px-5 pt-2 pb-6 md:pt-8 md:pb-10 relative lg:grid lg:grid-cols-2 lg:gap-12 lg:items-center">
           <div>
-            <p className="inline-block text-[13px] font-semibold text-[#7A5A12] bg-[#C9A24B]/15 rounded-full px-4 py-1.5 mb-5">
+            <p className="inline-block text-[13px] font-semibold text-[#7A5A12] bg-[#C9A24B]/15 rounded-full px-4 py-1.5 mb-4">
               La technologie au service de vos affaires.
             </p>
             <h1 className="font-display text-[36px] md:text-5xl font-bold leading-[1.1] text-[#14284B]">
               Gérez votre entreprise simplement, <span className="text-[#9A7424]">depuis votre téléphone.</span>
             </h1>
-            <p className="text-base md:text-lg mt-5 max-w-xl leading-relaxed">
+            <p className="text-base md:text-lg mt-4 max-w-xl leading-relaxed">
               DIAKO BUSINESS réunit des outils de gestion pour chaque métier : stock, factures, commandes et bien plus.
               Diako Stock est disponible dès aujourd&apos;hui, les autres modules arrivent bientôt.
             </p>
-            <div className="mt-8 flex flex-col sm:flex-row gap-3 max-w-md sm:max-w-none">
+            <div className="mt-6 flex flex-col sm:flex-row gap-3 max-w-md sm:max-w-none">
               <Link href="/inscription" className={BOUTON_PRINCIPAL}>
                 Commencer gratuitement
               </Link>
@@ -379,17 +411,24 @@ function PageAccueil() {
             </div>
             <p className="text-sm text-[#5B616B] mt-4">Gratuit jusqu&apos;à 5 produits · Sans carte bancaire · 100 % en français</p>
           </div>
-          <div className="mt-10 lg:mt-0 max-w-xl mx-auto w-full">
+          <div className="mt-6 lg:mt-0 max-w-xl mx-auto w-full">
             <IllustrationEntrepreneurs />
           </div>
         </div>
       </section>
 
+      {/* TRANSITION DOUCE VERS LES MODULES */}
+      <div className="bg-[#FAF8F3] leading-[0]" aria-hidden="true">
+        <svg viewBox="0 0 1440 64" preserveAspectRatio="none" className="block w-full h-8 md:h-14" fill="#F3F4F6">
+          <path d="M0 64V34C180 8 380 0 620 16C860 32 1100 58 1440 24V64Z" />
+        </svg>
+      </div>
+
       {/* MODULES */}
-      <section id="modules" className="bg-[#F3F4F6] border-y border-[#E7E3D8]">
-        <div className="max-w-6xl mx-auto px-5 py-16 md:py-20">
+      <section id="modules" className="bg-[#F3F4F6] border-b border-[#E7E3D8]">
+        <div className="max-w-6xl mx-auto px-5 py-10 md:py-14">
           <div className="text-center max-w-2xl mx-auto">
-            <h2 className="font-display text-3xl md:text-4xl font-bold text-[#14284B]">Un module pour chaque métier</h2>
+            <h2 className="font-display text-[26px] sm:text-3xl md:text-4xl font-bold text-[#14284B]">Un module pour chaque métier</h2>
             <p className="mt-3 text-[#5B616B]">
               Choisissez celui qui correspond à votre activité. Diako Stock est ouvert dès maintenant, les autres arrivent bientôt.
             </p>
@@ -397,7 +436,7 @@ function PageAccueil() {
 
           <Link
             href="/inscription"
-            className="mt-10 block bg-white border-2 border-[#C9A24B] rounded-3xl p-6 md:p-8 shadow-xl shadow-[#C9A24B]/10 hover:shadow-2xl hover:shadow-[#C9A24B]/20 transition-shadow"
+            className="mt-7 block bg-white border-2 border-[#C9A24B] rounded-3xl p-5 md:p-8 shadow-xl shadow-[#C9A24B]/10 hover:shadow-2xl hover:shadow-[#C9A24B]/20 transition-shadow"
           >
             <div className="flex flex-col md:flex-row md:items-center gap-5 md:gap-8">
               <span className="flex-none w-16 h-16 rounded-2xl bg-[#C9A24B]/15 text-[#14284B] flex items-center justify-center">
@@ -412,30 +451,32 @@ function PageAccueil() {
                 <p className="mt-2">{stock.description}</p>
                 <p className="text-sm text-[#5B616B] mt-1">Gratuit jusqu&apos;à 5 produits · Sans carte bancaire</p>
               </div>
-              <span className={`${BOUTON_PRINCIPAL} flex-none`}>
-                Commencer gratuitement <Icone nom="fleche" taille={20} />
+              <span className="inline-flex w-full md:w-auto md:flex-none items-center justify-center gap-2 whitespace-nowrap bg-[#C9A24B] text-[#14284B] font-display font-semibold text-base sm:text-[17px] rounded-2xl px-5 md:px-7 py-4 shadow-lg shadow-[#C9A24B]/30">
+                Commencer gratuitement <Icone nom="fleche" taille={20} className="hidden sm:block" />
               </span>
             </div>
           </Link>
 
-          <div className="mt-5 grid grid-cols-2 lg:grid-cols-5 gap-3 md:gap-4">
+          <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3 md:gap-4">
             {autres.map((m) => (
               <a
                 key={m.code}
                 href={lienWhatsApp(`Bonjour, je suis intéressé par ${m.nom}. Prévenez-moi dès qu'il est disponible.`)}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="bg-white border border-[#E7E3D8] rounded-3xl p-4 md:p-5 flex flex-col hover:border-[#C9A24B]/60 hover:shadow-lg hover:shadow-[#14284B]/5 transition"
+                className="bg-white border border-[#E7E3D8] rounded-3xl p-3.5 lg:p-5 flex items-start gap-3.5 lg:flex-col lg:gap-0 hover:border-[#C9A24B]/60 hover:shadow-lg hover:shadow-[#14284B]/5 transition"
               >
-                <span className="w-12 h-12 rounded-2xl bg-[#C9A24B]/12 text-[#14284B] flex items-center justify-center">
-                  <Icone nom={m.code} taille={26} />
+                <span className="flex-none w-11 h-11 lg:w-12 lg:h-12 rounded-2xl bg-[#C9A24B]/12 text-[#14284B] flex items-center justify-center">
+                  <Icone nom={m.code} taille={24} />
                 </span>
-                <h3 className="font-display font-semibold text-[#14284B] mt-3 leading-tight">{m.nom}</h3>
-                <p className="text-[13px] text-[#5B616B] mt-1 flex-1">{m.description}</p>
-                <div className="mt-3">
-                  <Etat disponible={false} />
+                <div className="flex-1 min-w-0 lg:mt-3 lg:flex lg:flex-col">
+                  <h3 className="font-display font-semibold text-[#14284B] leading-tight">{m.nom}</h3>
+                  <p className="text-[13px] text-[#5B616B] mt-0.5 lg:flex-1">{m.description}</p>
+                  <div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1.5 lg:flex-col lg:items-start">
+                    <Etat disponible={false} />
+                    <span className="text-xs font-semibold text-[#14284B] underline underline-offset-2">Me prévenir sur WhatsApp</span>
+                  </div>
                 </div>
-                <p className="text-xs font-semibold text-[#14284B] underline underline-offset-2 mt-2">Me prévenir sur WhatsApp</p>
               </a>
             ))}
           </div>
@@ -444,22 +485,24 @@ function PageAccueil() {
 
       {/* POURQUOI CHOISIR DIAKO BUSINESS */}
       <section id="pourquoi" className="bg-white">
-        <div className="max-w-6xl mx-auto px-5 py-16 md:py-20">
-          <h2 className="font-display text-3xl md:text-4xl font-bold text-[#14284B] text-center">
+        <div className="max-w-6xl mx-auto px-5 py-10 md:py-14">
+          <h2 className="font-display text-[26px] sm:text-3xl md:text-4xl font-bold text-[#14284B] text-center">
             Pourquoi choisir DIAKO BUSINESS ?
           </h2>
-          <div className="mt-10 grid md:grid-cols-3 gap-5">
+          <div className="mt-7 grid md:grid-cols-3 gap-4 md:gap-5">
             {[
               ["bouclier", "Confiance", "Les données de chaque entreprise sont séparées et protégées. Vous seul voyez les chiffres de votre activité."],
               ["telephone", "Simplicité", "Pensé pour le téléphone, aussi simple que de tenir votre cahier. Pas besoin d'être expert en informatique."],
               ["mallette", "Professionnalisme", "Des reçus, des rapports et des chiffres clairs pour gérer votre entreprise comme les plus grands."],
             ].map(([icone, titre, texte]) => (
-              <div key={titre} className="bg-[#FAF8F3] border border-[#E7E3D8] rounded-3xl p-7">
-                <span className="w-14 h-14 rounded-2xl bg-[#C9A24B]/15 text-[#14284B] flex items-center justify-center">
-                  <Icone nom={icone} taille={28} />
+              <div key={titre} className="bg-[#FAF8F3] border border-[#E7E3D8] rounded-3xl p-5 md:p-6 flex gap-4 md:block items-start">
+                <span className="flex-none w-12 h-12 md:w-14 md:h-14 rounded-2xl bg-[#C9A24B]/15 text-[#14284B] flex items-center justify-center">
+                  <Icone nom={icone} taille={26} />
                 </span>
-                <h3 className="font-display text-xl font-bold text-[#14284B] mt-5">{titre}</h3>
-                <p className="mt-2 leading-relaxed">{texte}</p>
+                <div>
+                  <h3 className="font-display text-lg md:text-xl font-bold text-[#14284B] md:mt-5">{titre}</h3>
+                  <p className="mt-1 md:mt-2 leading-relaxed">{texte}</p>
+                </div>
               </div>
             ))}
           </div>
@@ -468,11 +511,11 @@ function PageAccueil() {
 
       {/* AVANTAGES DE LA PLATEFORME */}
       <section className="bg-[#FAF8F3]">
-        <div className="max-w-6xl mx-auto px-5 pb-16 md:pb-20 lg:grid lg:grid-cols-2 lg:gap-12 lg:items-center">
+        <div className="max-w-6xl mx-auto px-5 py-10 md:py-14 lg:grid lg:grid-cols-2 lg:gap-12 lg:items-center">
           <div>
-            <h2 className="font-display text-3xl md:text-4xl font-bold text-[#14284B]">Les avantages de la plateforme</h2>
+            <h2 className="font-display text-[26px] sm:text-3xl md:text-4xl font-bold text-[#14284B]">Les avantages de la plateforme</h2>
             <p className="mt-3 text-[#5B616B]">Disponibles dès aujourd&apos;hui avec Diako Stock.</p>
-            <div className="mt-8 space-y-5">
+            <div className="mt-6 space-y-4">
               {[
                 ["rafraichir", "Un stock toujours à jour", "Chaque vente met le stock à jour toute seule, sans calcul à refaire."],
                 ["cloche", "Des alertes avant la rupture", "Vous êtes prévenu dès qu'un article se fait rare."],
@@ -492,7 +535,7 @@ function PageAccueil() {
               ))}
             </div>
           </div>
-          <div className="mt-12 lg:mt-0 rounded-[32px] bg-gradient-to-br from-[#F6ECD2] to-[#FBF4E1] pt-10 px-4 overflow-hidden">
+          <div className="mt-8 lg:mt-0 rounded-[32px] bg-gradient-to-br from-[#F6ECD2] to-[#FBF4E1] pt-10 px-4 overflow-hidden">
             <DeuxTelephones />
           </div>
         </div>
@@ -500,20 +543,22 @@ function PageAccueil() {
 
       {/* COMMENT ÇA MARCHE */}
       <section id="fonctionnement" className="bg-white border-y border-[#E7E3D8]">
-        <div className="max-w-6xl mx-auto px-5 py-16 md:py-20">
-          <h2 className="font-display text-3xl md:text-4xl font-bold text-[#14284B] text-center">Comment ça marche ?</h2>
-          <div className="mt-10 grid md:grid-cols-3 gap-5">
+        <div className="max-w-6xl mx-auto px-5 py-10 md:py-14">
+          <h2 className="font-display text-[26px] sm:text-3xl md:text-4xl font-bold text-[#14284B] text-center">Comment ça marche ?</h2>
+          <div className="mt-7 grid md:grid-cols-3 gap-4 md:gap-5">
             {[
               ["Choisissez votre module", "Sélectionnez celui qui correspond à votre métier."],
               ["Créez votre compte", "En moins de 2 minutes, sans carte bancaire."],
               ["Gérez votre activité", "Ajoutez vos produits, enregistrez vos ventes et suivez vos chiffres."],
             ].map(([titre, texte], i) => (
-              <div key={titre} className="bg-[#FAF8F3] border border-[#E7E3D8] rounded-3xl p-7">
-                <span className="w-11 h-11 rounded-full bg-[#C9A24B] text-[#14284B] font-display font-bold text-lg flex items-center justify-center">
+              <div key={titre} className="bg-[#FAF8F3] border border-[#E7E3D8] rounded-3xl p-5 md:p-6 flex gap-4 md:block items-start">
+                <span className="flex-none w-10 h-10 md:w-11 md:h-11 rounded-full bg-[#C9A24B] text-[#14284B] font-display font-bold text-lg flex items-center justify-center">
                   {i + 1}
                 </span>
-                <h3 className="font-display text-xl font-bold text-[#14284B] mt-5">{titre}</h3>
-                <p className="mt-2">{texte}</p>
+                <div>
+                  <h3 className="font-display text-lg md:text-xl font-bold text-[#14284B] md:mt-5">{titre}</h3>
+                  <p className="mt-1 md:mt-2">{texte}</p>
+                </div>
               </div>
             ))}
           </div>
@@ -522,26 +567,26 @@ function PageAccueil() {
 
       {/* ESSAI GRATUIT */}
       <section id="essai" className="bg-[#F3F4F6]">
-        <div className="max-w-6xl mx-auto px-5 py-16 md:py-20">
+        <div className="max-w-6xl mx-auto px-5 py-10 md:py-14">
           <div className="text-center max-w-2xl mx-auto">
-            <h2 className="font-display text-3xl md:text-4xl font-bold text-[#14284B]">Essayez sans risque</h2>
+            <h2 className="font-display text-[26px] sm:text-3xl md:text-4xl font-bold text-[#14284B]">Essayez sans risque</h2>
             <p className="mt-3 text-[#5B616B]">Testez avant de vous engager, et passez à une formule payante seulement quand votre activité grandit.</p>
           </div>
-          <div className="mt-10 grid md:grid-cols-2 gap-5 max-w-4xl mx-auto">
-            <div className="bg-white border-2 border-[#C9A24B] rounded-3xl p-7">
+          <div className="mt-7 grid md:grid-cols-2 gap-4 md:gap-5 max-w-4xl mx-auto">
+            <div className="bg-white border-2 border-[#C9A24B] rounded-3xl p-6">
               <Etat disponible />
               <h3 className="font-display text-2xl font-bold text-[#14284B] mt-3">Diako Stock : gratuit pour commencer</h3>
               <p className="mt-2">Jusqu&apos;à 5 produits, sans limite de durée et sans carte bancaire. Vous passez à une formule supérieure quand vous en avez besoin.</p>
-              <div className="mt-6 flex flex-col sm:flex-row sm:items-center gap-3">
+              <div className="mt-5 flex flex-col sm:flex-row sm:items-center gap-3">
                 <Link href="/inscription" className={BOUTON_PRINCIPAL}>
                   Commencer gratuitement
                 </Link>
-                <Link href="/tarifs" className="text-[#14284B] font-semibold underline underline-offset-4">
+                <Link href="/tarifs" className="inline-block py-2.5 text-[#14284B] font-semibold underline underline-offset-4">
                   Voir les tarifs
                 </Link>
               </div>
             </div>
-            <div className="bg-white border border-[#E7E3D8] rounded-3xl p-7">
+            <div className="bg-white border border-[#E7E3D8] rounded-3xl p-6">
               <span className="inline-flex items-center text-[11px] font-semibold rounded-full bg-[#14284B]/8 text-[#14284B] px-2.5 py-1">
                 Prochains modules
               </span>
@@ -549,7 +594,7 @@ function PageAccueil() {
               <p className="mt-2">
                 Chaque nouveau module sera proposé avec 30 jours d&apos;essai gratuit, pour le tester tranquillement avant de vous abonner.
               </p>
-              <a href="#modules" className="inline-block mt-6 text-[#14284B] font-semibold underline underline-offset-4">
+              <a href="#modules" className="inline-block mt-3 py-2.5 text-[#14284B] font-semibold underline underline-offset-4">
                 Voir les modules à venir
               </a>
             </div>
@@ -559,11 +604,11 @@ function PageAccueil() {
 
       {/* APPEL À L'INSCRIPTION */}
       <section className="bg-[#FAF8F3]">
-        <div className="max-w-6xl mx-auto px-5 py-16 md:py-20">
-          <div className="rounded-[32px] bg-gradient-to-br from-[#F6ECD2] to-[#FBF4E1] border border-[#C9A24B]/30 px-6 py-12 md:py-14 text-center">
-            <h2 className="font-display text-3xl md:text-4xl font-bold text-[#14284B]">Prêt à faire avancer votre entreprise ?</h2>
+        <div className="max-w-6xl mx-auto px-5 py-10 md:py-14">
+          <div className="rounded-[32px] bg-gradient-to-br from-[#F6ECD2] to-[#FBF4E1] border border-[#C9A24B]/30 px-5 py-9 md:py-12 text-center">
+            <h2 className="font-display text-[26px] sm:text-3xl md:text-4xl font-bold text-[#14284B]">Prêt à faire avancer votre entreprise ?</h2>
             <p className="mt-3 max-w-xl mx-auto">Rejoignez DIAKO BUSINESS et commencez dès aujourd&apos;hui avec Diako Stock.</p>
-            <div className="mt-8 flex flex-col sm:flex-row gap-3 justify-center items-stretch sm:items-center max-w-md sm:max-w-none mx-auto">
+            <div className="mt-6 flex flex-col sm:flex-row gap-3 justify-center items-stretch sm:items-center max-w-md sm:max-w-none mx-auto">
               <Link href="/inscription" className={BOUTON_PRINCIPAL}>
                 Commencer gratuitement
               </Link>
@@ -577,7 +622,7 @@ function PageAccueil() {
 
       {/* PIED DE PAGE */}
       <footer className="bg-white border-t border-[#E7E3D8]">
-        <div className="max-w-6xl mx-auto px-5 py-12 grid gap-10 md:grid-cols-4">
+        <div className="max-w-6xl mx-auto px-5 py-9 grid gap-7 md:gap-10 md:grid-cols-4">
           <div className="md:col-span-2">
             <Logo />
             <p className="mt-4 text-[#14284B] font-medium">La technologie au service de vos affaires.</p>
@@ -612,16 +657,7 @@ function PageAccueil() {
         </div>
       </footer>
 
-      {/* BOUTON WHATSAPP */}
-      <a
-        href={WHATSAPP}
-        target="_blank"
-        rel="noopener noreferrer"
-        aria-label="Nous écrire sur WhatsApp"
-        className="fixed bottom-5 right-5 z-50 flex items-center gap-2 bg-[#25D366] text-white font-semibold rounded-full pl-4 pr-5 py-3 shadow-xl shadow-black/20"
-      >
-        <Icone nom="message" taille={22} /> WhatsApp
-      </a>
+      <BoutonWhatsApp />
     </main>
   );
 }
