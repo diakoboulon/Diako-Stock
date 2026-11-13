@@ -15,21 +15,29 @@ type Module = {
 
 // Modules du client. Les autres modules n'apparaissent jamais ici :
 // ils seront ajoutés seulement quand le client s'y est inscrit.
-const MODULES: Module[] = [
-  {
+const CATALOGUE: Record<string, Module> = {
+  stock: {
     code: "stock",
     nom: "Diako Stock",
     icone: "📦",
     description: "Produits, stock, ventes, clients à crédit et rapports.",
     href: "/tableau-de-bord",
   },
-];
+  facture: {
+    code: "facture",
+    nom: "Diako Facture",
+    icone: "🧾",
+    description: "Créez vos factures, suivez les paiements et envoyez-les sur WhatsApp.",
+    href: "/facture",
+  },
+};
 
 export default function ModulesPage() {
   const router = useRouter();
   const [prenom, setPrenom] = useState("");
   const [commerce, setCommerce] = useState("");
   const [chargement, setChargement] = useState(true);
+  const [modules, setModules] = useState<Module[]>([CATALOGUE.stock]);
 
   useEffect(() => {
     async function init() {
@@ -38,11 +46,25 @@ export default function ModulesPage() {
         router.push("/connexion");
         return;
       }
+      // Modules activés pour ce commerce (Diako Stock est toujours ouvert).
+      const liste: Module[] = [CATALOGUE.stock];
+      try {
+        const { data: lignes } = await supabase
+          .from("business_modules")
+          .select("module_code")
+          .eq("business_id", c.businessId);
+        (lignes ?? []).forEach((l: { module_code: string }) => {
+          if (CATALOGUE[l.module_code] && l.module_code !== "stock") liste.push(CATALOGUE[l.module_code]);
+        });
+      } catch {
+        // Si la lecture échoue, on reste sur Diako Stock.
+      }
       // Un seul module : on entre directement dedans, sans écran intermédiaire.
-      if (MODULES.length === 1) {
-        router.replace(MODULES[0].href);
+      if (liste.length === 1) {
+        router.replace(liste[0].href);
         return;
       }
+      setModules(liste);
       setCommerce(c.nom ?? "");
       const { data: session } = await supabase.auth.getUser();
       if (session.user) {
@@ -88,7 +110,7 @@ export default function ModulesPage() {
 
       <h2 className="font-display font-bold text-indigo-deep mb-3">Mes modules</h2>
       <div className="space-y-3">
-        {MODULES.map((m) => (
+        {modules.map((m) => (
           <a
             key={m.code}
             href={m.href}

@@ -47,6 +47,7 @@ export default function TableauDeBordPage() {
   const [resume, setResume] = useState<Resume | null>(null);
   const [chargement, setChargement] = useState(true);
   const [abonnement, setAbonnement] = useState<InfoAbonnement | null>(null);
+  const [autresModules, setAutresModules] = useState(false);
 
   useEffect(() => {
     async function charger() {
@@ -77,6 +78,12 @@ export default function TableauDeBordPage() {
 
       const businessId = membre.business_id as string;
       infoAbonnement(businessId).then(setAbonnement);
+      supabase
+        .from("business_modules")
+        .select("module_code")
+        .eq("business_id", businessId)
+        .limit(1)
+        .then(({ data }) => setAutresModules((data?.length ?? 0) > 0));
       const debutJour = new Date();
       debutJour.setHours(0, 0, 0, 0);
 
@@ -134,6 +141,9 @@ export default function TableauDeBordPage() {
     <main className="min-h-screen bg-bone px-5 py-8 max-w-md mx-auto pb-28">
            <header className="mb-6 flex items-start justify-between">
         <div>
+          {autresModules && (
+            <a href="/modules" className="block text-xs font-semibold text-bronze mb-0.5">← Mes modules</a>
+          )}
           <p className="text-ink/50 text-sm">{resume.commerce}</p>
           <h1 className="font-display text-2xl font-bold text-indigo-deep">
             Bonjour {resume.prenom} 👋

@@ -33,7 +33,7 @@ export default function ConnexionPage() {
     // L'administrateur de la plateforme arrive sur son tableau de bord ;
     // les clients arrivent directement dans leur module, comme avant.
     const { data: estAdmin } = await supabase.rpc("est_admin_plateforme");
-    router.push(estAdmin === true ? "/admin" : "/tableau-de-bord");
+    router.push(estAdmin === true ? "/admin" : "/modules");
   }
 
   return (
