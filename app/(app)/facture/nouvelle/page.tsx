@@ -233,7 +233,7 @@ export default function NouvelleFacture() {
                 </div>
               </div>
               <p className="text-right text-sm text-ink/60">
-                Total de la ligne : <span className="font-semibold text-indigo-deep">{fcfa(totalLigne(l))} FCFA</span>
+                Montant de la ligne : <span className="font-semibold text-indigo-deep">{fcfa(totalLigne(l))} FCFA</span>
               </p>
             </div>
           ))}

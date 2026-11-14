@@ -12,6 +12,7 @@ import {
   fcfa,
   dateFr,
   numeroWhatsApp,
+  phraseMontant,
 } from "@/lib/facture";
 import { BadgeStatut, EcranBloque, useContexteFacture } from "../commun";
 
@@ -101,7 +102,7 @@ export default function DetailFacture() {
       </div>
 
       {/* LA FACTURE (c'est cette partie qui s'imprime) */}
-      <article className="bg-white border border-ink/10 rounded-3xl p-5 md:p-8 print:border-0 print:rounded-none print:p-0">
+      <article className="bg-white border border-ink/10 rounded-3xl p-4 sm:p-5 md:p-8 print:border-0 print:rounded-none print:p-0">
         <div className="flex flex-col sm:flex-row sm:justify-between gap-4">
           <div>
             <p className="font-display text-xl font-bold text-indigo-deep">{nomEntreprise}</p>
@@ -126,19 +127,31 @@ export default function DetailFacture() {
           {facture.client_adresse && <p className="text-sm text-ink/60">{facture.client_adresse}</p>}
         </div>
 
-        <div className="mt-6 divide-y divide-ink/10 border-y border-ink/10">
-          {lignes.map((l) => (
-            <div key={l.id} className="flex items-start justify-between gap-4 py-3">
-              <div className="min-w-0">
-                <p className="font-medium text-ink">{l.designation}</p>
-                <p className="text-sm text-ink/50">
-                  {l.quantite} × {fcfa(l.prix_unitaire)} FCFA
-                </p>
-              </div>
-              <p className="font-semibold text-ink whitespace-nowrap">{fcfa(l.total_ligne)} FCFA</p>
-            </div>
-          ))}
+        <div className="mt-6 overflow-hidden rounded-xl border border-ink/20 print:rounded-none">
+          <table className="w-full text-[13px] sm:text-sm">
+            <thead>
+              <tr className="bg-bone text-indigo-deep text-left align-bottom">
+                <th className="hidden sm:table-cell w-10 px-3 py-2.5 font-semibold">N°</th>
+                <th className="px-2 sm:px-3 py-2.5 font-semibold">Désignation</th>
+                <th className="px-1.5 sm:px-3 py-2.5 font-semibold text-center">Quantité</th>
+                <th className="px-1.5 sm:px-3 py-2.5 font-semibold text-right">Prix unitaire</th>
+                <th className="px-2 sm:px-3 py-2.5 font-semibold text-right">Montant</th>
+              </tr>
+            </thead>
+            <tbody>
+              {lignes.map((l, i) => (
+                <tr key={l.id} className="border-t border-ink/15 align-top">
+                  <td className="hidden sm:table-cell px-3 py-2.5 text-ink/50">{i + 1}</td>
+                  <td className="px-2 sm:px-3 py-2.5 font-medium text-ink">{l.designation}</td>
+                  <td className="px-1.5 sm:px-3 py-2.5 text-center">{Number(l.quantite).toLocaleString("fr-FR")}</td>
+                  <td className="px-1.5 sm:px-3 py-2.5 text-right whitespace-nowrap">{fcfa(l.prix_unitaire)}</td>
+                  <td className="px-2 sm:px-3 py-2.5 text-right font-semibold whitespace-nowrap">{fcfa(l.total_ligne)}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
+        <p className="text-xs text-ink/50 mt-1.5">Montants en francs CFA (FCFA)</p>
 
         <div className="mt-4 ml-auto max-w-xs space-y-1 text-sm">
           <div className="flex justify-between text-ink/70">
@@ -171,7 +184,17 @@ export default function DetailFacture() {
           {facture.statut === "annulee" && <p className="text-right font-semibold text-ink/50 pt-1">Facture annulée</p>}
         </div>
 
-        {facture.note && <p className="mt-5 text-sm text-ink/70 whitespace-pre-line">{facture.note}</p>}
+        {facture.statut !== "annulee" && (
+          <p className="mt-6 text-sm text-ink/70">
+            Arrêtée la présente facture à la somme de <strong className="text-ink">{phraseMontant(facture.total)}</strong>.
+          </p>
+        )}
+
+        {facture.note && <p className="mt-4 text-sm text-ink/70 whitespace-pre-line">{facture.note}</p>}
+
+        <div className="hidden print:flex justify-end mt-12 text-sm text-ink/60">
+          <div className="w-56 border-t border-ink/30 pt-2 text-center">Cachet et signature</div>
+        </div>
       </article>
 
       {/* ACTIONS (cachées à l'impression) */}
