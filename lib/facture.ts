@@ -12,6 +12,8 @@ export type Facture = {
   date_facture: string;
   date_echeance: string | null;
   tva_taux: number;
+  remise_taux?: number | null;
+  remise_montant?: number | null;
   sous_total: number;
   tva_montant: number;
   total: number;
@@ -44,7 +46,30 @@ export const STATUTS_FACTURE: Record<string, string> = {
   annulee: "Annulée",
 };
 
-export const MODES_PAIEMENT = ["Espèces", "Orange Money", "Moov Money", "Wave", "Virement", "Chèque", "Autre"];
+export const MODES_PAIEMENT = ["Espèces", "Orange Money", "Moov Money", "Wave", "Virement bancaire", "Autre"];
+
+export type Entreprise = {
+  nom: string;
+  ville?: string | null;
+  adresse?: string | null;
+  telephone?: string | null;
+  email?: string | null;
+  nif?: string | null;
+  rccm?: string | null;
+  logo_data?: string | null;
+  infos_paiement?: string | null;
+};
+
+// Calcul des montants (le même que dans la base de données) :
+// sous-total - remise = base ; TVA = base x taux ; total = base + TVA
+export function calculerTotaux(sousTotal: number, remiseEnPourcent: boolean, remiseValeur: number, tvaTaux: number) {
+  const remise = remiseEnPourcent
+    ? Math.round((sousTotal * Math.max(0, remiseValeur)) / 100)
+    : Math.max(0, Math.round(remiseValeur));
+  const base = Math.max(0, sousTotal - remise);
+  const tva = Math.round((base * Math.max(0, tvaTaux)) / 100);
+  return { remise, base, tva, total: base + tva };
+}
 
 export const fcfa = (n: number | null | undefined) =>
   Number(n ?? 0).toLocaleString("fr-FR").replace(/\u202f|\u00a0/g, " ");

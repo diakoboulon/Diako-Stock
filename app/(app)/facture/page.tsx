@@ -68,6 +68,7 @@ export default function ListeFactures() {
       <header className="mb-5 flex items-start justify-between gap-3">
         <div>
           <a href="/modules" className="inline-block py-1.5 text-xs font-semibold text-bronze">← Mes modules</a>
+          <a href="/facture/entreprise" className="inline-block ml-4 py-1.5 text-xs font-semibold text-bronze underline underline-offset-2">Mon entreprise</a>
           <h1 className="font-display text-2xl font-bold text-indigo-deep">Mes factures</h1>
           <p className="text-sm text-ink/50">{ctx.nomCommerce}</p>
         </div>
