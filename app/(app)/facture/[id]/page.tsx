@@ -79,7 +79,6 @@ export default function DetailFacture() {
   const peutEncaisser = f.statut === "emise" || f.statut === "partielle";
   const peutModifier = f.statut === "emise" && f.montant_paye === 0 && ctx.moduleActif;
   const remise = f.remise_montant ?? 0;
-  const infosManquantes = !!entreprise && !entreprise.logo_data && !entreprise.email && !entreprise.nif && !entreprise.rccm;
 
   const texteWhatsApp =
     `Bonjour ${f.client_nom}, voici votre facture ${f.numero} de ${nomEntreprise} : ` +
@@ -136,12 +135,6 @@ export default function DetailFacture() {
         <a href="/facture" className="inline-block py-1.5 text-xs font-semibold text-bronze">← Mes factures</a>
         <span className="text-xs font-semibold rounded-full bg-white border border-ink/10 px-3 py-1 text-ink/70">{etiquette[f.statut]}</span>
       </div>
-
-      {infosManquantes && (
-        <a href="/facture/entreprise" className="print:hidden block mb-3 text-sm bg-bronze/10 text-[#7A5A12] rounded-xl px-4 py-3">
-          Ajoutez votre logo, votre e-mail, votre NIF et votre RCCM pour qu&apos;ils apparaissent sur la facture. <strong className="underline">Compléter</strong>
-        </a>
-      )}
 
       {/* LA FACTURE : c'est cette partie qui est imprimée et téléchargée */}
       <article className="bg-white border border-[#E7E3D8] rounded-2xl sm:rounded-3xl p-4 sm:p-7 md:p-9 print:border-0 print:rounded-none print:p-0 print:shadow-none">
